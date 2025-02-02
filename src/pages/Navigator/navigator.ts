@@ -1,5 +1,4 @@
 import Handlebars from 'handlebars';
-import './navigator.scss'
 import {tamplateLoader} from "../../hooks/tamplateLoader.ts";
 
 export async function Navigator(): Promise<void> {
