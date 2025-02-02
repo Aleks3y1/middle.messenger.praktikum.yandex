@@ -1,0 +1,9 @@
+[build]
+command = "npm run build" # Команда для сборки
+publish = "dist" # Папка с готовыми файлами для деплоя
+base = "." # Корневая папка проекта (по умолчанию)
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200

@@ -1,0 +1,26 @@
+<div class="main">
+    <aside class="main__sidebar">
+        <div class="main__sidebar__header">
+            <a href="/profile" class="main__sidebar__profile-link">
+                Профиль
+                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="10" viewBox="0 0 6 10" fill="none">
+                    <path d="M1 9L5 5L1 1" stroke="#6B6B6B"/>
+                </svg>
+            </a>
+            {{> search searchLabel='Поиск'}}
+        </div>
+        <div class="main__sidebar__body">
+            {{> userChat chat=usersChat}}
+        </div>
+    </aside>
+    <main class="main__wrapper">
+        <div class="main__content">
+            {{> chatFrame }}
+<!--            {{#if currentUser}}-->
+<!--                {{> chatFrame currentUser=currentUser }}-->
+<!--            {{else}}-->
+<!--                <p class="main__content__placeholder">Выберите чат чтобы отправить сообщение</p>-->
+<!--            {{/if}}-->
+        </div>
+    </main>
+</div>

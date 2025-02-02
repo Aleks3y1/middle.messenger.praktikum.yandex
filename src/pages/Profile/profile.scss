@@ -1,0 +1,132 @@
+@import "src/styles/variables";
+
+.profile__wrapper {
+  width: 100vw;
+  display: flex;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+
+}
+
+.profile__content {
+  width: 100vw;
+  height: 100vh;
+  background-color: $mainBgColor;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  padding-top: 57px;
+  align-items: center;
+
+  &__avatar {
+    &__label {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+
+      &:hover .overlay {
+        display: block;
+      }
+    }
+
+    &__image {
+      border-radius: 50%;
+      width: 132px;
+      height: 132px;
+      object-fit: cover;
+      display: block;
+
+      &:hover {
+        fill: #000;
+        opacity: 0.5;
+      }
+
+      &:hover .overlay {
+        display: block;
+      }
+    }
+  }
+
+  &__actions {
+    width: 510px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 60px;
+  }
+
+  &__name {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    margin: 24px 0 60px 0;
+  }
+
+  &__details {
+    width: 510px;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0 10px 0;
+  }
+
+  &__form {
+    font-family: inherit;
+
+    &:disabled {
+      background-color: inherit;
+      text-align: end;
+    }
+  }
+}
+
+.password__actions {
+  margin: 92px 0 162px 0;
+}
+
+.return-wrapper {
+  width: 64px;
+  height: 100vh;
+  background-color: $altBgColor;
+  align-content: center;
+  justify-items: center;
+  position: fixed;
+
+  &__block {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.action-link {
+  text-decoration: none;
+  color: #3369F3;
+  padding: 10px 0 10px 0;
+}
+
+.logout-link {
+  color: #FF0000;
+}
+
+.border-style-bottom {
+  border-bottom: 1px solid $iconsAndLinesColor;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+  display: none;
+  font-size: 13px;
+  line-height: 14px;
+  text-align: center;
+  align-content: center;
+}
