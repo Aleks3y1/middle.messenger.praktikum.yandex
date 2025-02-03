@@ -13,7 +13,7 @@
     <div class="profile__content">
         <div class="profile__content__avatar">
             <form action="/upload-avatar" method="POST" enctype="multipart/form-data">
-                <label class="profile__content__avatar__label">
+                <label class="profile__content__avatar__label" for="avatar">
                     <img src="/static/avatar.jpg" alt="Аватар пользователя" class="profile__content__avatar__image"/>
                     <span class="overlay">Поменять <br/>аватар</span>
                     <input type="file" name="avatar" class="profile__content__avatar__upload" accept="image/*" hidden/>
@@ -22,77 +22,86 @@
         </div>
 
         {{#if password}}
-            <h2 class="profile__content__name">Иван</h2>
-            <ul class="profile__content__details">
-                <li class="profile__content__item border-style-bottom">
-                    <p>Почта</p>
-                    <label>
-                        <input type="email" class="profile__content__form" disabled value="pochta@yandex.ru"
-                               name="email">
-                    </label>
-                </li>
-                <li class="profile__content__item border-style-bottom">
-                    <p>Логин</p>
-                    <label>
-                        <input type="text" class="profile__content__form" disabled value="ivanivanov" name="login">
-                    </label>
-                </li>
-                <li class="profile__content__item border-style-bottom">
-                    <p>Имя</p>
-                    <label>
-                        <input type="text" class="profile__content__form" disabled value="Иван" name="first_name">
-                    </label>
-                </li>
-                <li class="profile__content__item border-style-bottom">
-                    <p>Фамилия</p>
-                    <label>
-                        <input type="text" class="profile__content__form" disabled value="Иванов" name="second_name">
-                    </label>
-                </li>
-                <li class="profile__content__item border-style-bottom">
-                    <p>Имя в чате</p>
-                    <label>
-                        <input type="text" class="profile__content__form" disabled value="Иван" name="display_name">
-                    </label>
-                </li>
-                <li class="profile__content__item">
-                    <p>Телефон</p>
-                    <label>
-                        <input type="tel" class="profile__content__form" disabled value="+7 (909) 967 30 30"
-                               name="phone">
-                    </label>
-                </li>
-            </ul>
+            <form action="/update-profile" method="POST">
+                <h2 class="profile__content__name">Иван</h2>
+                <ul class="profile__content__details">
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Почта</p>
+                        <label for="email">
+                            <input type="email" id="email" class="profile__content__form" disabled
+                                   value="pochta@yandex.ru"
+                                   name="email">
+                        </label>
+                    </li>
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Логин</p>
+                        <label for="login">
+                            <input type="text" id="login" class="profile__content__form" disabled value="ivanivanov"
+                                   name="login">
+                        </label>
+                    </li>
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Имя</p>
+                        <label for="first_name">
+                            <input type="text" id="first_name" class="profile__content__form" disabled value="Иван"
+                                   name="first_name">
+                        </label>
+                    </li>
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Фамилия</p>
+                        <label for="second_name">
+                            <input type="text" id="second_name" class="profile__content__form" disabled value="Иванов"
+                                   name="second_name">
+                        </label>
+                    </li>
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Имя в чате</p>
+                        <label for="display_name">
+                            <input type="text" id="display_name" class="profile__content__form" disabled value="Иван"
+                                   name="display_name">
+                        </label>
+                    </li>
+                    <li class="profile__content__item">
+                        <p>Телефон</p>
+                        <label for="phone">
+                            <input type="tel" id="phone" class="profile__content__form" disabled
+                                   value="+7 (909) 967 30 30"
+                                   name="phone">
+                        </label>
+                    </li>
+                </ul>
 
-            <div class="profile__content__actions">
-                <a href="#" class="action-link border-style-bottom">Изменить данные</a>
-                <a href="#" class="action-link action-link__password border-style-bottom">Изменить пароль</a>
-                <a href="/" class="action-link logout-link">Выйти</a>
-            </div>
+                <div class="profile__content__actions">
+                    <a href="#" class="action-link border-style-bottom">Изменить данные</a>
+                    <a href="#" class="action-link action-link__password border-style-bottom">Изменить пароль</a>
+                    <a href="/" class="action-link logout-link">Выйти</a>
+                </div>
+            </form>
 
         {{else}}
-            <ul class="profile__content__details password__actions">
-                <li class="profile__content__item border-style-bottom">
-                    <p>Старый пароль</p>
-                    <label>
-                        <input type="password" class="profile__content__form" name="oldPassword">
-                    </label>
-                </li>
-                <li class="profile__content__item border-style-bottom">
-                    <p>Новый пароль</p>
-                    <label>
-                        <input type="password" class="profile__content__form" name="newPassword">
-                    </label>
-                </li>
-                <li class="profile__content__item border-style-bottom">
-                    <p>Повторите новый пароль</p>
-                    <label>
-                        <input type="password" class="profile__content__form" name="newPassword">
-                    </label>
-                </li>
-            </ul>
-
-            {{> button type="submit" buttonText=buttonText}}
+            <form action="" method="POST">
+                <ul class="profile__content__details password__actions">
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Старый пароль</p>
+                        <label for="oldPassword">
+                            <input type="password" class="profile__content__form" name="oldPassword">
+                        </label>
+                    </li>
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Новый пароль</p>
+                        <label for="newPassword">
+                            <input type="password" id="newPassword" class="profile__content__form" name="newPassword">
+                        </label>
+                    </li>
+                    <li class="profile__content__item border-style-bottom">
+                        <p>Повторите новый пароль</p>
+                        <label for="retryPassword">
+                            <input type="password" id="retryPassword" class="profile__content__form" name="newPassword">
+                        </label>
+                    </li>
+                </ul>
+                {{> button type="submit" buttonText=buttonText}}
+            </form>
         {{/if}}
     </div>
 </div>
