@@ -1,0 +1,30 @@
+@import "src/styles/variables";
+
+.error__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.error__heading {
+  font-size: 40px;
+  line-height: 40px;
+  color: $mainTxtColor;
+}
+
+.error__title {
+  color: $mainTxtColor;
+  font-size: 20px;
+  line-height: 20px;
+  margin: 20px 0 69px 0;
+}
+
+.error__link {
+  text-align: center;
+  font-size: 11px;
+  line-height: 11px;
+  color: #3369F3;
+}

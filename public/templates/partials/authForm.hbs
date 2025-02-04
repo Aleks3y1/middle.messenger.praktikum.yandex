@@ -1,0 +1,13 @@
+<form action="" method="POST" class="auth-form">
+    <h2 class="auth-form__description">{{description}}</h2>
+    {{#each inputs}}
+        <div class="form-group">
+            <input type="{{type}}" id="{{id}}" class="form-group__input" name="{{name}}" required>
+            <label for="{{id}}" class="form-group__label">{{label}}</label>
+        </div>
+    {{/each}}
+    <div class="auth-form__actions">
+        {{> button type="submit" buttonText=buttonText}}
+        <a href="{{href}}" class="reg-link">{{linkText}}</a>
+    </div>
+</form>

@@ -1,0 +1,85 @@
+<div class="chat-frame">
+    <header class="chat-frame__header">
+        <div class="chat-frame__user-info">
+            <figure class="chat-frame__avatar">
+                <!--                <img src="" alt="">-->
+            </figure>
+            <p class="chat-frame__user-name">Вадим</p>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="3" height="16" viewBox="0 0 3 16" fill="none">
+            <circle cx="1.5" cy="2" r="1.5" fill="#1E1E1E"/>
+            <circle cx="1.5" cy="8" r="1.5" fill="#1E1E1E"/>
+            <circle cx="1.5" cy="14" r="1.5" fill="#1E1E1E"/>
+        </svg>
+    </header>
+    <main class="chat-frame__main">
+        <p class="chat-frame__date">19 июня</p>
+        <div class="chat-frame__messages only-anchor">
+            Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила
+            Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью
+            500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с
+            собой забрали только кассеты с пленкой.
+
+            Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не
+            попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.
+            <p class="chat-frame__messages__time">11:56</p>
+        </div>
+        <div class="chat-frame__messages picture-frame">
+            <img src="../../../static/camera.jpg" alt="изображение отправленное пользователем">
+            <p class="chat-frame__messages__time">11:56</p>
+        </div>
+        <div class="chat-frame__messages-our">
+            <p>Круто!</p>
+            <p class="chat-frame__messages-our__time">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5" fill="none">
+                    <line y1="-0.5" x2="3.765" y2="-0.5"
+                          transform="matrix(0.705933 0.708278 -0.705933 0.708278 0.700195 2.33301)" stroke="#3369F3"/>
+                    <line y1="-0.5" x2="5.6475" y2="-0.5"
+                          transform="matrix(0.705933 -0.708278 0.705933 0.708278 3.3584 5)" stroke="#3369F3"/>
+                    <line y1="-0.5" x2="5.6475" y2="-0.5"
+                          transform="matrix(0.705933 -0.708278 0.705933 0.708278 6.01562 5)" stroke="#3369F3"/>
+                </svg>
+                12:00
+            </p>
+        </div>
+    </main>
+    <div class="chat-frame__footer">
+        <div class="chat-frame__footer__insert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M7.18613 13.4995L14.7623 5.9234L15.7051 6.86621L8.12893 14.4424L7.18613 13.4995Z"
+                      fill="#999999"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M9.6998 16.0132L17.2759 8.43707L18.2188 9.37988L10.6426 16.956L9.6998 16.0132Z"
+                      fill="#999999"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M15.0426 21.356L22.6187 13.7798L23.5615 14.7227L15.9854 22.2988L15.0426 21.356Z"
+                      fill="#999999"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M17.5572 23.8706L25.1334 16.2945L26.0762 17.2373L18.5 24.8134L17.5572 23.8706Z"
+                      fill="#999999"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M17.5574 23.8699C14.9423 26.485 10.7118 26.4945 8.10829 23.891C5.50479 21.2875 5.51421 17.057 8.12933 14.4418L7.18652 13.499C4.04838 16.6372 4.03708 21.7138 7.16127 24.838C10.2855 27.9622 15.3621 27.9509 18.5002 24.8127L17.5574 23.8699Z"
+                      fill="#999999"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M22.619 13.7801L23.5618 14.7229C26.0026 12.2821 26.0113 8.33361 23.5814 5.90368C21.1515 3.47375 17.203 3.48255 14.7622 5.92332L15.705 6.86613C17.6228 4.94838 20.7252 4.94147 22.6344 6.8507C24.5436 8.75993 24.5367 11.8623 22.619 13.7801Z"
+                      fill="#999999"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M9.7002 16.0137C7.95678 17.7571 7.9505 20.5774 9.68617 22.3131C11.4218 24.0488 14.2422 24.0425 15.9856 22.2991L15.0428 21.3563C13.8224 22.5766 11.8481 22.581 10.6332 21.3661C9.41822 20.1511 9.42262 18.1769 10.643 16.9565L9.7002 16.0137Z"
+                      fill="#999999"/>
+            </svg>
+        </div>
+        <div class="chat-frame__footer__enter">
+            <input type="text" placeholder="Сообщение" class="chat-frame__footer__input" name="message"
+                   id="message_input">
+            <label for="message_input"></label>
+        </div>
+        <div class="chat-frame__footer__send">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="14" r="14" fill="#3369F3"/>
+                <rect x="8" y="13.2002" width="11" height="1.6" fill="white"/>
+                <path d="M15 9L19 14L15 19" stroke="white" stroke-width="1.6"/>
+            </svg>
+        </div>
+    </div>
+</div>
