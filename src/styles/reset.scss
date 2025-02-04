@@ -1,0 +1,12 @@
+// файл для сброса стилей браузера
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+}
+
+li, a {
+  text-decoration: none;
+  list-style: none;
+}
