@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "vite",
-    "lint": "eslint 'src/**/*.{ts,hbs}' --fix"
+    "lint": "eslint 'src/**/*.{ts,hbs}' --fix",
+    "stylelint": "stylelint 'src/**/*.{css,scss}' --fix"
   },
   "devDependencies": {
     "@types/handlebars": "^4.0.40",
