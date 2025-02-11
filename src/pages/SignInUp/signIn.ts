@@ -1,34 +1,69 @@
-import Handlebars from 'handlebars';
-import './singIn.scss';
-import {tamplateLoader} from "../../hooks/tamplateLoader.ts";
+import Handlebars from "handlebars";
+import Block from "../../base/Block";
+import {templateLoader} from "../../hooks/templateLoader";
+import "./singIn.scss";
+import {Validation} from "../../hooks/Validation.ts";
 
-export async function SignIn(): Promise<void> {
-    const app = document.querySelector('#app');
+export class SignIn extends Block {
+    constructor() {
+        super("div", {});
+        this.loadTemplate();
+    }
 
-    if (app) {
+    private async loadTemplate() {
         try {
-            const buttonContent = await tamplateLoader('/templates/partials/button.hbs');
-            Handlebars.registerPartial('button', buttonContent);
+            const [buttonContent, authFormContent, signInTemplate] = await Promise.all([
+                templateLoader("/templates/partials/button.hbs"),
+                templateLoader("/templates/partials/authForm.hbs"),
+                templateLoader("/templates/signIn.hbs")
+            ]);
 
-            const partialContent = await tamplateLoader('/templates/partials/authForm.hbs');
-            Handlebars.registerPartial('authForm', partialContent);
+            Handlebars.registerPartial("button", buttonContent);
+            Handlebars.registerPartial("authForm", authFormContent);
 
-            const response = await fetch('/templates/signIn.hbs');
-            const content = await response.text();
-            const template = Handlebars.compile(content);
-
-            app.innerHTML = template({
-                description: 'Вход',
-                inputs: [
-                    {type: 'text', id: 'login', label: 'Логин', name: 'login'},
-                    {type: 'password', id: 'password', label: 'Пароль', name: 'password'},
-                ],
-                buttonText: 'Войти',
-                href: '/signup',
-                linkText: 'Ещё не зарегистрированы?',
-            });
+            this.props.template = Handlebars.compile(signInTemplate);
+            this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
         } catch (error) {
-            console.error('Ошибка загрузки страницы:', error);
+            console.error("Ошибка загрузки шаблона:", error);
+        }
+    }
+
+    protected render(): string {
+        if (!this.props.template) {
+            return `<p>Загружаем страницу...</p>`;
+        }
+
+        return this.props.template({
+            description: "Вход",
+            inputs: [
+                {
+type: "text", id: "login", label: "Логин", name: "login"
+},
+                {
+type: "password", id: "password", label: "Пароль", name: "password"
+}
+            ],
+            buttonText: "Войти",
+            href: "/signup",
+            linkText: "Ещё не зарегистрированы?"
+        });
+    }
+
+    protected addEvents(): void {
+        const form = this._element?.querySelector(".auth-form");
+
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                form.querySelectorAll("input").forEach((input) => {
+                    Validation.validate(input)
+                });
+            });
+
+            form.querySelectorAll("input").forEach((input) => {
+                input.addEventListener("blur", () => Validation.validate(input));
+            });
         }
     }
 }

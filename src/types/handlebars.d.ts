@@ -1,10 +1,9 @@
-declare module '*.hbs' {
-    const content: string;
-    export default content;
+declare module "*.hbs" {
+    const template: (context?: any) => string;
+    export default template;
 }
-
 declare module 'vite-plugin-handlebars' {
-    import { Plugin } from 'vite';
+    import {Plugin} from 'vite';
 
     interface HandlebarsOptions {
         partialDirectory?: string;
@@ -12,5 +11,6 @@ declare module 'vite-plugin-handlebars' {
     }
 
     function handlebars(options?: HandlebarsOptions): Plugin;
+
     export default handlebars;
 }

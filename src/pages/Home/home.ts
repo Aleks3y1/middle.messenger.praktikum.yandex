@@ -1,56 +1,71 @@
-import Handlebars from 'handlebars';
-import './home.scss';
-import '../../hooks/tamplateLoader.ts'
-import {tamplateLoader} from "../../hooks/tamplateLoader.ts";
+import Handlebars from "handlebars";
+import Block from "../../base/Block";
+import {templateLoader} from "../../hooks/templateLoader";
+import "./home.scss";
 
-export async function Home(): Promise<void> {
-    const app = document.querySelector('#app');
+export class Home extends Block {
+    constructor() {
+        super("div", {usersChat: Home.getUsers()});
+        this.loadTemplate();
+    }
 
-    if (app) {
+    private async loadTemplate(): Promise<void> {
         try {
-            const searchContent = await tamplateLoader('/templates/partials/search.hbs');
-            Handlebars.registerPartial('search', searchContent);
+            const [searchContent, chatFrameContent, userChatContent, homeTemplate] = await Promise.all([
+                templateLoader("/templates/partials/search.hbs"),
+                templateLoader("/templates/partials/chatFrame.hbs"),
+                templateLoader("/templates/partials/userChat.hbs"),
+                templateLoader("/templates/home.hbs")
+            ]);
 
-            const chatFrameContent = await tamplateLoader('/templates/partials/chatFrame.hbs');
-            Handlebars.registerPartial('chatFrame', chatFrameContent);
+            Handlebars.registerPartial("search", searchContent);
+            Handlebars.registerPartial("chatFrame", chatFrameContent);
+            Handlebars.registerPartial("userChat", userChatContent);
 
-            const userChatContent = await tamplateLoader('/templates/partials/userChat.hbs');
-            Handlebars.registerPartial('userChat', userChatContent);
-
-            const content = await tamplateLoader('/templates/home.hbs');
-            const template = Handlebars.compile(content);
-
-            app.innerHTML = template({
-                usersChat: [
-                    {
-                        userName: 'Андрей',
-                        date: '10:49',
-                        message: 'Изображение',
-                        you: false,
-                        unread: true,
-                        quantityUnread: '2'
-                    },
-                    {
-                        userName: 'Андрей',
-                        date: '10:49',
-                        message: 'Изображение',
-                        you: true,
-                        unread: true,
-                        quantityUnread: '2'
-                    },
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-                    {userName: 'Андрей', date: '10:49', message: 'Изображение', you: false, unread: false},
-
-
-                ]
-            });
+            this.props.template = Handlebars.compile(homeTemplate);
+            this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
         } catch (error) {
-            console.error('Ошибка загрузки страницы:', error);
+            console.error("Ошибка загрузки страницы:", error);
         }
+    }
+
+    protected render(): string {
+        if (!this.props.template) {
+            return `<p>Загружаем страницу...</p>`;
+        }
+
+        return this.props.template({usersChat: this.props.usersChat});
+    }
+
+    private static getUsers() {
+        return [
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: true, quantityUnread: "2"
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: true, unread: true, quantityUnread: "2"
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+},
+            {
+userName: "Андрей", date: "10:49", message: "Изображение", you: false, unread: false
+}
+        ];
     }
 }

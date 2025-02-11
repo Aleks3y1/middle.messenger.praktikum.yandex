@@ -1,39 +1,82 @@
-import Handlebars from 'handlebars';
-import './singIn.scss';
-import {tamplateLoader} from "../../hooks/tamplateLoader.ts";
+import Handlebars from "handlebars";
+import Block from "../../base/Block";
+import {templateLoader} from "../../hooks/templateLoader";
+import "./singIn.scss";
+import {Validation} from "../../hooks/Validation.ts";
 
-export async function SignUp(): Promise<void> {
-    const app = document.querySelector('#app');
+export class SignUp extends Block {
+    constructor() {
+        super("div", {});
+        this.loadTemplate();
+    }
 
-    if (app) {
+    private async loadTemplate() {
         try {
-            const buttonContent = await tamplateLoader('/templates/partials/button.hbs');
-            Handlebars.registerPartial('button', buttonContent);
+            const [buttonContent, authFormContent, signUpTemplate] = await Promise.all([
+                templateLoader("/templates/partials/button.hbs"),
+                templateLoader("/templates/partials/authForm.hbs"),
+                templateLoader("/templates/signUp.hbs")
+            ]);
 
-            const partialContent = await tamplateLoader('/templates/partials/authForm.hbs');
-            Handlebars.registerPartial('authForm', partialContent);
+            Handlebars.registerPartial("button", buttonContent);
+            Handlebars.registerPartial("authForm", authFormContent);
 
-            const response = await fetch('/templates/signUp.hbs');
-            const content = await response.text();
-            const template = Handlebars.compile(content);
-
-            app.innerHTML = template({
-                description: 'Регистрация',
-                inputs: [
-                    {type: 'text', id: 'name', label: 'Имя', name: 'first_name'},
-                    {type: 'text', id: 'firstName', label: 'Фамилия', name: 'second_name'},
-                    {type: 'text', id: 'login', label: 'Логин', name: 'login'},
-                    {type: 'tel', id: 'tel', label: 'Номер телефона', name: 'phone'},
-                    {type: 'email', id: 'email', label: 'Почта', name: 'email'},
-                    {type: 'password', id: 'password', label: 'Пароль', name: 'password'},
-                    {type: 'password', id: 'retryPassword', label: 'Повторите пароль'},
-                ],
-                buttonText: 'Зарегистрироваться',
-                href: '/signin',
-                linkText: 'Войти',
-            });
+            this.props.template = Handlebars.compile(signUpTemplate);
+            this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
         } catch (error) {
-            console.error('Ошибка загрузки страницы:', error);
+            console.error("Ошибка загрузки страницы:", error);
+        }
+    }
+
+    protected render(): string {
+        if (!this.props.template) {
+            return `<p>Загружаем страницу...</p>`;
+        }
+
+        return this.props.template({
+            description: "Регистрация",
+            inputs: [
+                {
+type: "text", id: "name", label: "Имя", name: "first_name"
+},
+                {
+type: "text", id: "firstName", label: "Фамилия", name: "second_name"
+},
+                {
+type: "text", id: "login", label: "Логин", name: "login"
+},
+                {
+type: "tel", id: "tel", label: "Номер телефона", name: "phone"
+},
+                {
+type: "email", id: "email", label: "Почта", name: "email"
+},
+                {
+type: "password", id: "password", label: "Пароль", name: "password"
+},
+                {type: "password", id: "retryPassword", label: "Повторите пароль"}
+            ],
+            buttonText: "Зарегистрироваться",
+            href: "/signin",
+            linkText: "Войти"
+        });
+    }
+
+    protected addEvents(): void {
+        const form = this._element?.querySelector(".auth-form");
+
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                form.querySelectorAll("input").forEach((input) => {
+                    Validation.validate(input)
+                });
+            });
+
+            form.querySelectorAll("input").forEach((input) => {
+                input.addEventListener("blur", () => Validation.validate(input));
+            });
         }
     }
 }
