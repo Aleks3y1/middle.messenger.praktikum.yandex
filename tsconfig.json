@@ -3,11 +3,17 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "skipLibCheck": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"],
-
-    /* Bundler mode */
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -15,8 +21,6 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -24,6 +28,7 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "src", "types"
+    "src",
+    "types"
   ]
 }
