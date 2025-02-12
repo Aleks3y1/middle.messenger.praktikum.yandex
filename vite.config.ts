@@ -1,6 +1,6 @@
-import {defineConfig} from 'vite';
-//@ts-ignore
-import handlebars from 'vite-plugin-handlebars';
+import { defineConfig } from "vite";
+// @ts-expect-error: Возможно, нет типов
+import handlebars from "vite-plugin-handlebars";
 
 export default defineConfig({
     server: {
@@ -8,11 +8,20 @@ export default defineConfig({
     },
     plugins: [
         handlebars({
-            partialDirectory: 'public/templates/partials',
+            partialDirectory: "public/templates/partials",
         }),
     ],
-    assetsInclude: ['**/*.hbs'],
+    resolve: {
+        alias: {
+            crypto: "crypto-browserify",
+        },
+    },
+    define: {
+        global: "window",
+        "process.env": {},
+    },
+    assetsInclude: ["**/*.hbs"],
     build: {
-        outDir: 'dist',
+        outDir: "dist",
     },
 });
