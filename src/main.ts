@@ -10,9 +10,10 @@ import "./styles/main.scss";
 
 registerHelpers();
 
-if (!globalThis.crypto || typeof globalThis.crypto.getRandomValues !== 'function') {
-    const { webcrypto } = await import('crypto');
-    globalThis.crypto = webcrypto;
+if (!globalThis.crypto) {
+    import("crypto").then((crypto) => {
+        globalThis.crypto = crypto.webcrypto as Crypto;
+    });
 }
 
 type Route = {
