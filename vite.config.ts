@@ -1,5 +1,6 @@
-import {defineConfig} from "vite";
-import handlebars from "vite-plugin-handlebars";
+import { defineConfig } from 'vite';
+// @ts-ignore
+import handlebars from 'vite-plugin-handlebars';
 
 export default defineConfig({
     server: {
@@ -7,11 +8,11 @@ export default defineConfig({
     },
     plugins: [
         handlebars({
-            partialDirectory: "public/templates/partials",
+            partialDirectory: 'public/templates/partials',
         }),
     ],
-    assetsInclude: ["**/*.hbs"],
+    assetsInclude: ['**/*.hbs'],
     build: {
-        outDir: "dist",
+        outDir: 'dist',
     },
 });

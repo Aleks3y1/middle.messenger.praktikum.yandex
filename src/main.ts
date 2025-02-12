@@ -10,8 +10,9 @@ import "./styles/main.scss";
 
 registerHelpers();
 
-if (!globalThis.crypto) {
-    console.warn("Проверка.");
+if (!globalThis.crypto || typeof globalThis.crypto.getRandomValues !== 'function') {
+    const { webcrypto } = await import('crypto');
+    globalThis.crypto = webcrypto;
 }
 
 type Route = {
