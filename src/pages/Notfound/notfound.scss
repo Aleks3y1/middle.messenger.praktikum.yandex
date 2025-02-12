@@ -1,4 +1,4 @@
-@import "src/styles/variables";
+@use "../../styles/variables.scss" as *;
 
 .error__content {
   display: flex;

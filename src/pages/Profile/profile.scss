@@ -1,4 +1,4 @@
-@import "src/styles/variables";
+@use "../../styles/variables.scss" as *;
 
 .profile__wrapper {
   width: 100vw;
