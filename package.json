@@ -15,7 +15,6 @@
     "@types/handlebars": "^4.0.40",
     "@types/lodash-es": "^4.17.12",
     "eslint": "^9.20.1",
-    "eslint-define-config": "^2.1.0",
     "postcss": "^8.5.2",
     "sass": "^1.84.0",
     "sass-embedded": "^1.83.4",
