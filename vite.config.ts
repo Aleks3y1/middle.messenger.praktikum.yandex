@@ -1,12 +1,13 @@
 import { defineConfig } from "vite";
-// @ts-expect-error: Возможно, нет типов
 import handlebars from "vite-plugin-handlebars";
+import NodePolyfills from "vite-plugin-node-polyfills";
 
 export default defineConfig({
     server: {
         port: 3000,
     },
     plugins: [
+        NodePolyfills(),
         handlebars({
             partialDirectory: "public/templates/partials",
         }),
