@@ -10,11 +10,7 @@ import "./styles/main.scss";
 
 registerHelpers();
 
-// if (!globalThis.crypto?.getRandomValues) {
-//     import("crypto").then((crypto) => {
-//         globalThis.crypto = crypto.webcrypto as Crypto;
-//     });
-// }
+
 
 type Route = {
     path: string;
