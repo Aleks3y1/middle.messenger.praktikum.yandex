@@ -10,8 +10,6 @@ import "./styles/main.scss";
 
 registerHelpers();
 
-
-
 type Route = {
     path: string;
     render: () => HTMLElement;
