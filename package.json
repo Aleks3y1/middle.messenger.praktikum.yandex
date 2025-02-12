@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "vite",
+    "start": "vite build && vite preview",
     "lint": "eslint src --ext .ts,.hbs --fix",
     "stylelint": "stylelint 'src/**/*.{css,scss}' --fix"
   },
