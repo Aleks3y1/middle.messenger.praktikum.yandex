@@ -10,6 +10,10 @@ import "./styles/main.scss";
 
 registerHelpers();
 
+if (!globalThis.crypto) {
+    console.warn("Проверка.");
+}
+
 type Route = {
     path: string;
     render: () => HTMLElement;
