@@ -1,17 +1,25 @@
 import Handlebars from "handlebars";
 import EventBus from "./EventBus";
 
+type Events = Record<string, (event: Event) => void>;
+
+type Props = {
+    events?: Events;
+    [key: string]: any;
+    // можно использовать unknown, но тогда нужно при использовании, с помощью 'as', явно приводить к типу(в будущем).
+};
+
 export default class Block {
-    static EVENTS: { INIT: string, FLOW_RENDER: string } = {
+    static EVENTS = {
         INIT: "init",
         FLOW_RENDER: "flow:render"
     };
 
     protected _element: HTMLElement | null = null;
     eventBus: EventBus;
-    props: Record<string, any>;
+    props: Props;
 
-    constructor(tagName = "div", props: Record<string, any> = {}) {
+    constructor(tagName = "div", props: Props = {}) {
         this.eventBus = new EventBus();
         this.props = this._makePropsProxy(props);
         this._element = document.createElement(tagName);
@@ -26,71 +34,41 @@ export default class Block {
 
     private _render(): void {
         if (!this._element) return;
+        this._removeEvents();
         this._element.innerHTML = this.render();
-        this.addEvents();
+        this._addEvents();
     }
 
     protected render(): string {
         return "";
     }
 
-    protected addEvents(): void {
-        this.getSearch();
-        this.getMessage();
-        this.getFormNode();
+    private _addEvents(): void {
+        const {events = {}} = this.props;
+        Object.keys(events).forEach(eventName => {
+            this._element?.addEventListener(eventName, events[eventName]);
+        });
     }
 
-    private getSearch(): void {
-        const searchForm = this._element?.querySelector(".search-form") as HTMLInputElement;
-        const input = this._element?.querySelector(".search-form__input") as HTMLInputElement;
-
-        if (searchForm) {
-            searchForm.addEventListener("submit", (event) => {
-                event.preventDefault();
-                console.log(input.value);
-            })
-        }
-    }
-
-    private getMessage(): void {
-        const searchForm = this._element?.querySelector(".chat-frame__footer__enter") as HTMLInputElement;
-        const input = this._element?.querySelector(".chat-frame__footer__input") as HTMLInputElement;
-
-        if (searchForm) {
-            searchForm.addEventListener("submit", (event) => {
-                event.preventDefault();
-                console.log(input.value);
-            })
-        }
-    }
-
-    private getFormNode(): void {
-        const regForm = this._element?.querySelector(".auth-form") as HTMLFormElement | null;
-
-        if (regForm) {
-            regForm.addEventListener("submit", (event) => {
-                event.preventDefault();
-                const formNode = new FormData(regForm);
-                const data: Record<string, string> = {};
-                formNode.forEach((value: FormDataEntryValue, key: string) => {
-                    data[key] = value.toString();
-                })
-
-                console.log(data);
-            })
-        }
+    private _removeEvents(): void {
+        const {events = {}} = this.props;
+        Object.keys(events).forEach(eventName => {
+            if (events[eventName]) {
+                this._element?.removeEventListener(eventName, events[eventName]);
+            }
+        });
     }
 
     public getContent(): HTMLElement {
         return this._element!;
     }
 
-    public setProps(nextProps: Record<string, any>): void {
+    public setProps(nextProps: Props): void {
         Object.assign(this.props, nextProps);
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
     }
 
-    private _makePropsProxy(props: Record<string, any>) {
+    private _makePropsProxy(props: Props) {
         return new Proxy(props, {
             set: (target, prop, value) => {
                 target[prop as string] = value;

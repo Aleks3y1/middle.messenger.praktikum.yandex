@@ -5,7 +5,14 @@ import "./profile.scss";
 
 export class Profile extends Block {
     constructor() {
-        super("div", {password: true, buttonText: "Изменить"});
+        super("div", {
+            password: true,
+            buttonText: "Изменить",
+            events: {
+                click: (event) => this.handleClick(event),
+            }
+        });
+
         this.loadTemplate();
     }
 
@@ -36,22 +43,17 @@ export class Profile extends Block {
         });
     }
 
-    protected addEvents(): void {
-        const changePasswordButton = this._element?.querySelector(".action-link__password");
-        const saveButton = this._element?.querySelector(".main-button");
+    private handleClick(event: Event): void {
+        const target = event.target as HTMLElement;
 
-        if (changePasswordButton) {
-            changePasswordButton.addEventListener("click", (e) => {
-                e.preventDefault();
-                this.setProps({password: false, buttonText: "Сохранить"});
-            });
+        if (target.closest(".action-link__password")) {
+            event.preventDefault();
+            this.setProps({password: false, buttonText: "Сохранить"});
         }
 
-        if (saveButton) {
-            saveButton.addEventListener("click", (e) => {
-                e.preventDefault();
-                this.setProps({password: true, buttonText: "Изменить"});
-            });
+        if (target.closest(".main-button")) {
+            event.preventDefault();
+            this.setProps({password: true, buttonText: "Изменить"});
         }
     }
 }

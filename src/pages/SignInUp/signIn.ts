@@ -6,7 +6,12 @@ import {Validation} from "../../hooks/Validation.ts";
 
 export class SignIn extends Block {
     constructor() {
-        super("div", {});
+        super("div", {
+            events: {
+                submit: (event) => this.handleEvents(event),
+                blur: (event) => this.handleBlur(event)
+            }
+        });
         this.loadTemplate();
     }
 
@@ -36,12 +41,8 @@ export class SignIn extends Block {
         return this.props.template({
             description: "Вход",
             inputs: [
-                {
-type: "text", id: "login", label: "Логин", name: "login"
-},
-                {
-type: "password", id: "password", label: "Пароль", name: "password"
-}
+                {type: "text", id: "login", label: "Логин", name: "login"},
+                {type: "password", id: "password", label: "Пароль", name: "password"}
             ],
             buttonText: "Войти",
             href: "/signup",
@@ -49,21 +50,30 @@ type: "password", id: "password", label: "Пароль", name: "password"
         });
     }
 
-    protected addEvents(): void {
-        const form = this._element?.querySelector(".auth-form");
+    private handleEvents(event: Event): void {
+        event.preventDefault();
+        const target = event.target as HTMLElement;
 
-        if (form) {
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
+        if (target.closest(".auth-form")) {
+            this.getFormNode(event);
+        }
+    }
 
-                form.querySelectorAll("input").forEach((input) => {
-                    Validation.validate(input)
-                });
-            });
+    private handleBlur(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        if (input.tagName === "INPUT") {
+            Validation.validate(input);
+        }
+    }
 
-            form.querySelectorAll("input").forEach((input) => {
-                input.addEventListener("blur", () => Validation.validate(input));
-            });
+    private getFormNode(event: Event): void {
+        event.preventDefault();
+        const regForm = event.target as HTMLFormElement;
+        if (regForm) {
+            const formNode = new FormData(regForm);
+            const data: Record<string, string> = {};
+            formNode.forEach((value, key) => (data[key] = value.toString()));
+            console.log(data);
         }
     }
 }
