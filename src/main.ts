@@ -1,56 +1,66 @@
-import {SignIn} from "./pages/SignInUp/signIn.ts";
-import {SignUp} from "./pages/SignInUp/signUp.ts";
-import {Home} from "./pages/Home/home.ts";
-import {Profile} from "./pages/Profile/profile.ts";
-import {Navigator} from "./pages/Navigator/navigator.ts";
-import { registerHelpers } from './hooks/helpers.ts';
-import './styles/main.scss';
-import {Notfound} from "./pages/Notfound/notfound.ts";
-import {ServerError} from "./pages/500/serverError.ts";
+import {SignIn} from "./pages/SignInUp/signIn";
+import {SignUp} from "./pages/SignInUp/signUp";
+import {Home} from "./pages/Home/home";
+import {Profile} from "./pages/Profile/profile";
+import {Navigator} from "./pages/Navigator/navigator";
+import {Notfound} from "./pages/Notfound/notfound";
+import {ServerError} from "./pages/500/serverError";
+import {registerHelpers} from "./hooks/helpers";
+import "./styles/main.scss";
 
 registerHelpers();
 
 type Route = {
     path: string;
-    render: () => void;
-}
+    render: () => HTMLElement;
+};
 
 const routes: Route[] = [
-    {path: '/', render: Navigator},
-    {path: '/signin', render: SignIn},
-    {path: '/signup', render: SignUp},
-    {path: '/home', render: Home},
-    {path: '/profile', render: Profile},
-    {path: '/notfound', render: Notfound},
-    {path: '/500', render: ServerError},
+    {path: "/", render: () => new Navigator().getContent()},
+    {path: "/signin", render: () => new SignIn().getContent()},
+    {path: "/signup", render: () => new SignUp().getContent()},
+    {path: "/home", render: () => new Home().getContent()},
+    {path: "/profile", render: () => new Profile().getContent()},
+    {path: "/notfound", render: () => new Notfound().getContent()},
+    {path: "/500", render: () => new ServerError().getContent()}
 ];
 
 function handleRoutes(): void {
     const path = window.location.pathname;
     const route = routes.find((route) => route.path === path);
 
+    const app = document.querySelector("#app");
+    if (!app) return;
+
     if (route) {
-        route.render();
+        const page = route.render();
+        if (page instanceof Node) {
+            app.replaceChildren(page);
+        } else {
+            console.error("Ошибка: render", page);
+        }
     } else {
-        window.history.pushState({}, '', '/');
-        Navigator();
+        navigate("/notfound");
     }
 }
 
 function navigate(path: string): void {
-    window.history.pushState({}, '', path);
+    if (routes.some((route) => route.path === path)) {
+        window.history.pushState({}, "", path);
+    } else {
+        window.history.pushState({}, "", "/notfound");
+    }
     handleRoutes();
 }
 
-document.addEventListener('click', (e) => {
+document.addEventListener("click", (e) => {
     const target = e.target as HTMLAnchorElement;
-
-    if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('/')) {
+    if (target.tagName === "A" && target.getAttribute("href")?.startsWith("/")) {
         e.preventDefault();
-        navigate(target.getAttribute('href') || '/');
+        navigate(target.getAttribute("href") || "/");
     }
 });
 
-window.addEventListener('popstate', handleRoutes);
+window.addEventListener("popstate", handleRoutes);
 
-handleRoutes();
+document.addEventListener("DOMContentLoaded", handleRoutes);

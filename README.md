@@ -17,6 +17,10 @@
 
 > Handlebars.
 
+> ESLint
+
+> Stylelint
+
 ---
 
 Доступные команды
