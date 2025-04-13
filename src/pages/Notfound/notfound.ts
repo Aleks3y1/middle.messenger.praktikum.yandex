@@ -1,20 +1,32 @@
-import {tamplateLoader} from "../../hooks/tamplateLoader.ts";
 import Handlebars from "handlebars";
-import './notfound.scss'
+import Block from "../../base/Block";
+import { templateLoader } from "../../hooks/templateLoader";
+import "./notfound.scss";
 
-export async function Notfound(): Promise<void> {
-    const app = document.querySelector('#app');
+export class Notfound extends Block {
+    constructor() {
+        super("div", {});
+        this.loadTemplate();
+    }
 
-    if (app) {
+    private async loadTemplate() {
         try {
-            const content = await tamplateLoader('/templates/errorsPage.hbs');
-            const template = Handlebars.compile(content);
-            app.innerHTML = template({
-                number: '404',
-                title: 'Не туда попали',
-            })
+            const content = await templateLoader("/templates/errorsPage.hbs");
+            this.props.template = Handlebars.compile(content);
+            this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
         } catch (error) {
-            console.error('Ошибка загрузки страницы:', error);
+            console.error("Ошибка загрузки страницы:", error);
         }
+    }
+
+    protected render(): string {
+        if (!this.props.template) {
+            return `<p>Загружаем страницу...</p>`;
+        }
+
+        return this.props.template({
+            number: "404",
+            title: "Не туда попали"
+        });
     }
 }

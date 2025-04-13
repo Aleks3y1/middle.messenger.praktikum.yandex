@@ -1,52 +1,59 @@
-import './profile.scss';
-import {tamplateLoader} from "../../hooks/tamplateLoader.ts";
 import Handlebars from "handlebars";
+import Block from "../../base/Block";
+import {templateLoader} from "../../hooks/templateLoader";
+import "./profile.scss";
 
-let password = true;
+export class Profile extends Block {
+    constructor() {
+        super("div", {
+            password: true,
+            buttonText: "Изменить",
+            events: {
+                click: (event) => this.handleClick(event),
+            }
+        });
 
-export async function Profile(): Promise<void> {
-    const app = document.querySelector('#app') as HTMLElement;
+        this.loadTemplate();
+    }
 
-    if (app) {
+    private async loadTemplate(): Promise<void> {
         try {
-            const buttonContent = await tamplateLoader('/templates/partials/button.hbs');
-            Handlebars.registerPartial('button', buttonContent);
+            const [buttonContent, profileTemplate] = await Promise.all([
+                templateLoader("/templates/partials/button.hbs"),
+                templateLoader("/templates/profile.hbs")
+            ]);
 
-            const content = await tamplateLoader('/templates/profile.hbs');
-            const template = Handlebars.compile(content);
+            Handlebars.registerPartial("button", buttonContent);
+            this.props.template = Handlebars.compile(profileTemplate);
 
-            function render(): void {
-                app.innerHTML = template({
-                    password,
-                    buttonText: password ? 'Сохранить' : 'Изменить',
-                });
-                eventListener();
-            }
-
-            function eventListener(): void {
-                const buttonEvent = document.querySelector('.action-link__password');
-                const buttonEnd = document.querySelector('.main-button');
-
-                if (buttonEvent) {
-                    buttonEvent.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        password = false;
-                        render();
-                    });
-                }
-
-                if (buttonEnd) {
-                    buttonEnd.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        password = true;
-                        render();
-                    })
-                }
-            }
-
-            render();
+            this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
         } catch (error) {
-            console.error('Ошибка загрузки страницы:', error);
+            console.error("Ошибка загрузки шаблона:", error);
+        }
+    }
+
+    protected render(): string {
+        if (!this.props.template) {
+            return `<p>Загружаем страницу...</p>`;
+        }
+
+        return this.props.template({
+            password: this.props.password,
+            buttonText: this.props.buttonText
+        });
+    }
+
+    private handleClick(event: Event): void {
+        const target = event.target as HTMLElement;
+
+        if (target.closest(".action-link__password")) {
+            event.preventDefault();
+            this.setProps({password: false, buttonText: "Сохранить"});
+        }
+
+        if (target.closest(".main-button")) {
+            event.preventDefault();
+            this.setProps({password: true, buttonText: "Изменить"});
         }
     }
 }

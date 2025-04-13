@@ -1,5 +1,5 @@
-import {defineConfig} from 'vite';
-//@ts-ignore
+import { defineConfig } from 'vite';
+// @ts-ignore
 import handlebars from 'vite-plugin-handlebars';
 
 export default defineConfig({
