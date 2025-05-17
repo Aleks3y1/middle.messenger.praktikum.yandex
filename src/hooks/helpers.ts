@@ -6,3 +6,7 @@ export function registerHelpers(): void {
         return `${root}/${path}`.replace(/\/+/g, '/');
     });
 }
+
+export function registerPartials(): void {
+    Handlebars.registerPartial("button", "{{> button }}");
+}

@@ -1,4 +1,4 @@
-@import "src/styles/variables";
+@use "../../styles/variables.scss" as *;
 
 .error__content {
   display: flex;
@@ -19,7 +19,7 @@
   color: $mainTxtColor;
   font-size: 20px;
   line-height: 20px;
-  margin: 20px 0 69px 0;
+  margin: 20px 0 69px;
 }
 
 .error__link {
