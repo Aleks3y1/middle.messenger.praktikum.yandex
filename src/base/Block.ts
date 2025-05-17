@@ -37,10 +37,19 @@ export default class Block {
         this._removeEvents();
         this._element.innerHTML = this.render();
         this._addEvents();
+        this.componentDidMount?.();
+    }
+
+    protected componentDidMount(): void {
     }
 
     protected render(): string {
-        return "";
+        const {template, usersChat} = this.props;
+        return template ? template({usersChat}) : `<p>Загружаем...</p>`;
+    }
+
+    protected lazyLoad(): void {
+        this._render();
     }
 
     private _addEvents(): void {
@@ -68,7 +77,7 @@ export default class Block {
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
     }
 
-    private _makePropsProxy(props: Props) {
+    private _makePropsProxy(props: Props): Props {
         return new Proxy(props, {
             set: (target, prop, value) => {
                 target[prop as string] = value;

@@ -2,7 +2,9 @@ import Handlebars from "handlebars";
 import Block from "../../base/Block";
 import {templateLoader} from "../../hooks/templateLoader";
 import "./singIn.scss";
-import {Validation} from "../../hooks/Validation.ts";
+import {Validation} from "../../hooks/Validation";
+import {registration} from "../../api/User/registration.ts";
+import {router} from "../../hooks/routerHook";
 
 export class SignUp extends Block {
     constructor() {
@@ -74,11 +76,39 @@ export class SignUp extends Block {
     private getFormNode(event: Event): void {
         event.preventDefault();
         const regForm = event.target as HTMLFormElement;
-        if (regForm) {
-            const formNode = new FormData(regForm);
-            const data: Record<string, string> = {};
-            formNode.forEach((value, key) => (data[key] = value.toString()));
-            console.log(data);
+
+        if (!regForm) {
+            return;
         }
+
+        // let isValid = true;
+        //
+        // regForm.querySelectorAll('input').forEach((input: HTMLInputElement) => {
+        //     const inputElem = input;
+        //     const valid = Validation.validate(inputElem);
+        //     if (!valid) {
+        //         isValid = false;
+        //     }
+        // })
+        //
+        // if(!isValid) {
+        //     return;
+        // }
+
+        const formNode = new FormData(regForm);
+        const data: Record<string, string> = {};
+        formNode.forEach((value, key) => (data[key] = value.toString()));
+        registration(data.first_name,
+            data.second_name,
+            data.login,
+            data.email,
+            data.password,
+            data.phone)
+            .then(() => {
+                router.go('/');
+            })
+            .catch((error) => {
+                console.error(error);
+            })
     }
 }

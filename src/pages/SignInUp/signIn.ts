@@ -3,6 +3,8 @@ import Block from "../../base/Block";
 import {templateLoader} from "../../hooks/templateLoader";
 import "./singIn.scss";
 import {Validation} from "../../hooks/Validation.ts";
+import {authorization} from "../../api/User/authorization.ts";
+import {router} from "../../hooks/routerHook.ts";
 
 export class SignIn extends Block {
     constructor() {
@@ -73,7 +75,13 @@ export class SignIn extends Block {
             const formNode = new FormData(regForm);
             const data: Record<string, string> = {};
             formNode.forEach((value, key) => (data[key] = value.toString()));
-            console.log(data);
+            authorization(data.login, data.password)
+                .then(() => {
+                    router.go('/');
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
         }
     }
 }

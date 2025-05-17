@@ -1,7 +1,7 @@
 export class Validation {
     private static patterns: Record<string, RegExp> = {
-        first_name: /^[A-ZА-Я][a-zа-я-]*$/,
-        second_name: /^[A-ZА-Я][a-zа-я-]*$/,
+        first_name: /^[A-Za-zА-Яа-я-]{2,20}$/,
+        second_name: /^[A-Za-zА-Яа-я-]{2,20}$/,
         login: /^(?!\d+$)[a-zA-Z0-9_-]{3,20}$/,
         email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         password: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/,
@@ -10,8 +10,8 @@ export class Validation {
     };
 
     private static errorMessages: Record<string, string> = {
-        first_name: "Обязательно с заглавной буквы",
-        second_name: "Обязательно с заглавной буквы",
+        first_name: "Только буквы и дефис",
+        second_name: "Только буквы и дефис",
         login: "От 3 до 20 символов",
         email: "Некорректный email",
         password: "8-40 символов",

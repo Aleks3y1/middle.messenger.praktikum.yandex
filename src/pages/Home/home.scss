@@ -307,3 +307,99 @@
 .picture-frame {
   padding: 0;
 }
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 36px;
+  top: 38px;
+  background: $iconsAndLinesColor;
+  border: 1px solid #ccc;
+  z-index: 10;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  &.visible {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    background: $iconsAndLinesColor;
+  }
+
+  &__item {
+    font: inherit;
+    padding: 4px 8px;
+    cursor: pointer;
+    background: inherit;
+    border-radius: inherit;
+  }
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9;
+  justify-content: center;
+  align-items: center;
+
+  &.active {
+    display: flex;
+  }
+
+  &__content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+
+    &__title {
+      text-align: center;
+    }
+
+    &__form {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+
+      &-input {
+        margin: 10px 0;
+        height: 40px;
+        padding: 10px;
+        font-size: 16px;
+      }
+    }
+  }
+
+  &__button {
+    padding: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    color: #fff;
+    background-color: $basicColor;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #007BFF;
+    }
+  }
+}
+
+.dropdown-button {
+  background: inherit;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  border-radius: 50%;
+
+  &:hover {
+    background: $iconsAndLinesColor;
+  }
+}
