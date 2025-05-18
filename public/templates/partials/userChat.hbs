@@ -1,10 +1,10 @@
 <ul class="aside-list">
     {{#each usersChat}}
-        <li class="aside-list__item"
-            tabindex="0"
-            {{#eq id ../selectedChatId}}active{{/eq}}
-            aria-label="Чат: {{title}}, последнее сообщение: {{last_message.content}}"
-            data-id="{{id}}">
+        <li
+                class="aside-list__item {{#if isActive}}active{{/if}}"
+                tabindex="0"
+                aria-label="Чат: {{title}}, последнее сообщение: {{last_message.content}}"
+                data-id="{{id}}">
 
             <figure class="aside-list__avatar">
                 <!-- <img class="aside-list__avatar-img" src="{{avatar}}" /> -->

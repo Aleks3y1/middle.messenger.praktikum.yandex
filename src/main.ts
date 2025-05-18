@@ -9,8 +9,8 @@ import {Profile} from "./pages/Profile/profile";
 import {router} from "./hooks/routerHook";
 import Handlebars from "handlebars";
 
+Handlebars.registerHelper("eq", (a, b) => a === b);
 registerHelpers();
-Handlebars.registerHelper('eq', (a: any, b: any) => a === b);
 
 router
     .use('/messenger', Home)

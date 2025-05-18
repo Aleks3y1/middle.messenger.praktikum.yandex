@@ -12,7 +12,7 @@ import {connectToChat} from "../../hooks/chatSocket.ts";
 import {deleteUserFromChat} from "../../api/Chat/deleteUserFromChat.ts";
 
 
-Handlebars.registerHelper("ifEquals", function(this: any, a: any, b: any, options: any) {
+Handlebars.registerHelper("ifEquals", function (this: any, a: any, b: any, options: any) {
     return a === b ? options.fn(this) : options.inverse(this);
 });
 
@@ -64,7 +64,7 @@ export class Home extends Block {
 
             this.dropMenuTemplate = dropMenu;
             this.props.template = Handlebars.compile(homeTemplate);
-            this.setProps({ usersChat: chats, selectedChatId: null });
+            this.setProps({usersChat: chats, selectedChatId: null});
             this.lazyLoad();
         } catch (error) {
             console.error("Ошибка загрузки страницы:", error);
@@ -76,6 +76,7 @@ export class Home extends Block {
         if (!this.props.template) {
             return `<p>Загружается страница...</p>`;
         }
+
         return this.props.template({
             usersChat: this.props.usersChat,
             selectedChatId: this.props.selectedChatId
@@ -105,7 +106,7 @@ export class Home extends Block {
         const menuContainer = this.getContent().querySelector("#dropdownMenu");
         if (!menuContainer) return;
         const template = Handlebars.compile(this.dropMenuTemplate);
-        const newHtml = template({ hasActiveChat });
+        const newHtml = template({hasActiveChat});
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = newHtml.trim();
         menuContainer.replaceWith(tempDiv.firstElementChild!);
@@ -146,7 +147,12 @@ export class Home extends Block {
                 try {
                     await deleteChat(chatId);
                     const chats = await getChats();
-                    this.setProps({ usersChat: chats, selectedChatId: null });
+                    const selectedChatId = this.getSelectedChatId();
+                    const usersChatWithActive = chats.map((chat: { id: number }) => ({
+                        ...chat,
+                        isActive: chat.id === selectedChatId
+                    }));
+                    this.setProps({usersChat: usersChatWithActive, selectedChatId});
                 } catch (err) {
                     console.error("Ошибка при удалении чата:", err);
                 }
@@ -189,7 +195,12 @@ export class Home extends Block {
         try {
             await createChat(input.value.trim());
             const chats = await getChats();
-            this.setProps({ usersChat: chats });
+            const selectedChatId = this.getSelectedChatId();
+            const usersChatWithActive = chats.map((chat: { id: number }) => ({
+                ...chat,
+                isActive: chat.id === selectedChatId
+            }));
+            this.setProps({usersChat: usersChatWithActive, selectedChatId});
             (this.getContent().querySelector("#createChatModal") as HTMLElement)?.classList.remove("active");
             input.value = "";
         } catch (error) {
@@ -237,13 +248,18 @@ export class Home extends Block {
 
     private handleSelectChat(): void {
         const items = this.getContent().querySelectorAll(".aside-list__item");
+
         items.forEach(item => item.addEventListener("click", async () => {
-            items.forEach(i => i.classList.remove("active"));
-            item.classList.add("active");
             const id = Number(item.getAttribute("data-id"));
-            this.setProps({ selectedChatId: id });
-            this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
-            await connectToChat(id, /* your userId here */ 1);
+
+            const usersChat = this.props.usersChat.map((chat: { id: number }) => ({
+                ...chat,
+                isActive: chat.id === id
+            }));
+
+            this.setProps({usersChat, selectedChatId: id});
+
+            await connectToChat(id, 1);
         }));
     }
 
