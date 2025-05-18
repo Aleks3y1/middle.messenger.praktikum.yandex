@@ -8,7 +8,7 @@ export async function getChats() {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.clone().text();
         throw new Error(errorText || `Ошибка: ${response.status}`);
     }
 

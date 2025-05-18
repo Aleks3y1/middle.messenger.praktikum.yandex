@@ -1,83 +1,71 @@
-export class ChatSocket {
+interface Message {
+    type: string;
+    content?: string;
+    time?: string;
+    user_id?: number;
+}
+
+function formatTime(isoTime: string): string {
+    const date = new Date(isoTime);
+    return date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+}
+
+export class ChatWebSocket {
     private socket: WebSocket;
-    private readonly pingInterval: number = 10000;
-    private pingTimer: ReturnType<typeof setInterval> | null = null;
-    private messageHandler: ((data: any) => void) | null = null;
+    private pingInterval?: number;
+    private messageHandler: (data: any) => void;
 
-    constructor(userId: number, chatId: number, token: string) {
-        const wsUrl = `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`;
-        console.log("Подключение к WebSocket:", wsUrl);
+    constructor(chatId: number, userId: number, token: string, onMessage: (data: any) => void) {
+        this.messageHandler = onMessage;
+        this.socket = new WebSocket(`wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`);
+        this.setupEvents();
+    }
 
-        this.socket = new WebSocket(wsUrl);
-
+    private setupEvents(): void {
         this.socket.addEventListener("open", () => {
             console.log("WebSocket открыт");
-            this.getOldMessages();
-            this.startPing();
+
+            this.pingInterval = window.setInterval(() => {
+                this.send({type: "ping"});
+            }, 10000);
+
+            this.send({type: "get old", content: "0"});
         });
 
         this.socket.addEventListener("message", (event) => {
-            const raw = event.data as string;
-
-            if (typeof raw === "string" && !raw.trim().startsWith("{")) {
-                console.debug("Служебное сообщение WS, пропускаем:", raw);
-                return;
-            }
-
             try {
-                const data = JSON.parse(raw);
-                console.log("Сообщение от сервера:", data);
-                if (this.messageHandler) {
-                    this.messageHandler(data);
+                const data = JSON.parse(event.data);
+
+                if (Array.isArray(data)) {
+                    data.forEach((msg: Message) => {
+                        if (msg.time) msg.time = formatTime(msg.time);
+                    });
+                } else if (data?.type === "message" && data.time) {
+                    data.time = formatTime(data.time);
                 }
-            } catch (e) {
-                console.error("Ошибка парсинга JSON:", e, "| Raw data:", raw);
+
+                this.messageHandler(data);
+            } catch (err) {
+                console.warn("Сообщение не JSON:", event.data);
+                console.error("Ошибка обработки сообщения:", err);
             }
         });
 
-        this.socket.addEventListener("close", (event) => {
-            this.stopPing();
-            console.warn("WebSocket закрыт:", event);
+        this.socket.addEventListener("close", () => {
+            console.log("WebSocket закрыт");
+            if (this.pingInterval) clearInterval(this.pingInterval);
         });
 
-        this.socket.addEventListener("error", (error) => {
-            console.error("WebSocket ошибка:", error);
+        this.socket.addEventListener("error", (event) => {
+            console.error("Ошибка WebSocket:", event);
         });
     }
 
-    public onMessage(callback: (data: any) => void): void {
-        this.messageHandler = callback;
-    }
-
-    public send(message: string): void {
-        if (this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(JSON.stringify({content: message, type: "message"}));
-        } else {
-            console.warn("Невозможно отправить — WebSocket не подключен");
-        }
-    }
-
-    public getOldMessages(): void {
-        if (this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(JSON.stringify({content: "0", type: "get old"}));
-        }
+    public send(msg: Message): void {
+        this.socket.send(JSON.stringify(msg));
     }
 
     public close(): void {
-        this.stopPing();
         this.socket.close();
-    }
-
-    private startPing(): void {
-        this.pingTimer = setInterval(() => {
-            this.socket.send(JSON.stringify({type: "ping"}));
-        }, this.pingInterval);
-    }
-
-    private stopPing(): void {
-        if (this.pingTimer) {
-            clearInterval(this.pingTimer);
-            this.pingTimer = null;
-        }
     }
 }

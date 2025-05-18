@@ -8,8 +8,10 @@ import {deleteChat} from "../../api/Chat/deleteChat.ts";
 import {addUserToChat} from "../../api/Chat/addUserToChat.ts";
 import {router} from "../../hooks/routerHook.ts";
 import {getUsersInChat} from "../../api/Chat/getUsersInChat.ts";
-import {connectToChat} from "../../hooks/chatSocket.ts";
 import {deleteUserFromChat} from "../../api/Chat/deleteUserFromChat.ts";
+import {ChatWebSocket} from "../../base/ChatWebSocket.ts";
+import {getChatToken} from "../../api/Chat/getChatToken.ts";
+import {user} from "../../api/User/user.ts";
 
 
 Handlebars.registerHelper("ifEquals", function (this: any, a: any, b: any, options: any) {
@@ -18,11 +20,14 @@ Handlebars.registerHelper("ifEquals", function (this: any, a: any, b: any, optio
 
 export class Home extends Block {
     private dropMenuTemplate: string | null = null;
+    private chatSocket: ChatWebSocket | null = null;
+    private currentUserId: number | null = null;
 
     constructor() {
         super("div", {
             usersChat: [],
             selectedChatId: null,
+            messages: [],
             events: {
                 submit: (event) => this.handleEvents(event),
             }
@@ -77,9 +82,15 @@ export class Home extends Block {
             return `<p>Загружается страница...</p>`;
         }
 
+        const activeChat = this.props.usersChat.find((chat: any) => chat.id === this.props.selectedChatId);
+
         return this.props.template({
             usersChat: this.props.usersChat,
-            selectedChatId: this.props.selectedChatId
+            selectedChatId: this.props.selectedChatId,
+            messages: this.props.messages,
+            chatTitle: activeChat?.title || "",
+            avatar: activeChat?.avatar || "",
+            currentDate: new Date().toLocaleDateString()
         });
     }
 
@@ -89,6 +100,12 @@ export class Home extends Block {
 
     protected componentDidUpdate(): boolean {
         this.attachEvents();
+
+        const container = this.getContent().querySelector(".chat-frame__main");
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+
         return true;
     }
 
@@ -105,12 +122,15 @@ export class Home extends Block {
         if (!this.dropMenuTemplate) return;
         const menuContainer = this.getContent().querySelector("#dropdownMenu");
         if (!menuContainer) return;
+
         const template = Handlebars.compile(this.dropMenuTemplate);
         const newHtml = template({hasActiveChat});
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = newHtml.trim();
+
         menuContainer.replaceWith(tempDiv.firstElementChild!);
-        this.dropdownsMenu();
+
+        this.attachEvents();
     }
 
     private dropdownsMenu(): void {
@@ -127,7 +147,9 @@ export class Home extends Block {
         toggle?.addEventListener("click", () => {
             const hasActive = this.props.selectedChatId !== null;
             this.renderDropdownMenu(hasActive);
-            menu?.classList.toggle("visible");
+
+            const newMenu = this.getContent().querySelector("#dropdownMenu");
+            newMenu?.classList.add("visible");
         });
 
         menu?.addEventListener("click", async (e) => {
@@ -249,18 +271,47 @@ export class Home extends Block {
     private handleSelectChat(): void {
         const items = this.getContent().querySelectorAll(".aside-list__item");
 
-        items.forEach(item => item.addEventListener("click", async () => {
-            const id = Number(item.getAttribute("data-id"));
+        items.forEach(item =>
+            item.addEventListener("click", async () => {
+                const chatId = Number(item.getAttribute("data-id"));
+                const token = await getChatToken(chatId);
 
-            const usersChat = this.props.usersChat.map((chat: { id: number }) => ({
-                ...chat,
-                isActive: chat.id === id
-            }));
+                const usersChat = this.props.usersChat.map((chat: { id: number }) => ({
+                    ...chat,
+                    isActive: chat.id === chatId
+                }));
 
-            this.setProps({usersChat, selectedChatId: id});
+                this.setProps({usersChat, selectedChatId: chatId});
 
-            await connectToChat(id, 1);
-        }));
+                this.chatSocket?.close();
+
+                const currentUser = await user();
+                this.currentUserId = currentUser.id;
+
+
+                this.chatSocket = new ChatWebSocket(chatId, currentUser.id, token, (data) => {
+                    if (Array.isArray(data)) {
+                        const formatted = data.reverse().map(m => ({
+                            ...m,
+                            isMine: m.user_id === currentUser.id
+                        }));
+                        this.setProps({messages: formatted});
+                    } else if (data.type === "message") {
+                        const userId = this.currentUserId;
+                        const isMine = data.user_id === userId;
+
+                        const newMessage = {
+                            ...data,
+                            isMine
+                        };
+
+                        this.setProps({
+                            messages: [...(this.props.messages || []), newMessage]
+                        });
+                    }
+                });
+            })
+        );
     }
 
     private handleOutsideClick(modal: Element | null): void {
@@ -282,6 +333,13 @@ export class Home extends Block {
         } else if (target.closest(".chat-frame__footer__enter")) {
             event.preventDefault();
             this.getMessage(event);
+        } else if (target.closest(".chat-frame__footer__form")) {
+            event.preventDefault();
+            const input = this.getContent().querySelector("#message_input") as HTMLInputElement;
+            const message = input?.value.trim();
+            if (!message) return;
+            this.chatSocket?.send({type: "message", content: message});
+            input.value = "";
         }
     }
 

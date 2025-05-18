@@ -19,7 +19,7 @@
         {{> addUserModal }}
         {{> deleteUserModal }}
     </header>
-    <main class="chat-frame__main">
+    <main class="chat-frame__main" id="chat-scroll-container">
         <p class="chat-frame__date">{{currentDate}}</p>
 
         {{#each messages}}
@@ -27,11 +27,35 @@
                 <div class="chat-frame__messages-our">
                     <p>{{this.content}}</p>
                     <p class="chat-frame__messages-our__time">{{this.time}}</p>
+                    <svg class="chat-frame__messages__breads" xmlns="http://www.w3.org/2000/svg" width="10" height="5"
+                         viewBox="0 0 10 5" fill="none">
+                        <line y1="-0.5" x2="3.765" y2="-0.5"
+                              transform="matrix(0.705933 0.708278 -0.705933 0.708278 0.700195 2.33301)"
+                              stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                        <line y1="-0.5" x2="5.6475" y2="-0.5"
+                              transform="matrix(0.705933 -0.708278 0.705933 0.708278 3.3584 5)"
+                              stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                        <line y1="-0.5" x2="5.6475" y2="-0.5"
+                              transform="matrix(0.705933 -0.708278 0.705933 0.708278 6.01562 5)"
+                              stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                    </svg>
                 </div>
             {{else}}
                 <div class="chat-frame__messages">
                     <p>{{this.content}}</p>
                     <p class="chat-frame__messages__time">{{this.time}}</p>
+                    <svg class="chat-frame__messages__breads" xmlns="http://www.w3.org/2000/svg" width="10" height="5"
+                         viewBox="0 0 10 5" fill="none">
+                        <line y1="-0.5" x2="3.765" y2="-0.5"
+                              transform="matrix(0.705933 0.708278 -0.705933 0.708278 0.700195 2.33301)"
+                              stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                        <line y1="-0.5" x2="5.6475" y2="-0.5"
+                              transform="matrix(0.705933 -0.708278 0.705933 0.708278 3.3584 5)"
+                              stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                        <line y1="-0.5" x2="5.6475" y2="-0.5"
+                              transform="matrix(0.705933 -0.708278 0.705933 0.708278 6.01562 5)"
+                              stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                    </svg>
                 </div>
             {{/if}}
         {{/each}}
@@ -62,18 +86,17 @@
                       fill="#999999"/>
             </svg>
         </div>
-        <form class="chat-frame__footer__enter">
-            <input type="text" placeholder="Сообщение" class="chat-frame__footer__input" name="message"
-                   id="message_input">
-            <label for="message_input"></label>
+        <form class="chat-frame__footer__form">
+            <label><input type="text" placeholder="Сообщение" class="chat-frame__footer__input" name="message"
+                          id="message_input"></label>
+            <button class="chat-frame__footer__send" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="14" fill="#3369F3"/>
+                    <rect x="8" y="13.2002" width="11" height="1.6" fill="white"/>
+                    <path d="M15 9L19 14L15 19" stroke="white" stroke-width="1.6"/>
+                </svg>
+            </button>
         </form>
-        <button class="chat-frame__footer__send" data-action="send">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <circle cx="14" cy="14" r="14" fill="#3369F3"/>
-                <rect x="8" y="13.2002" width="11" height="1.6" fill="white"/>
-                <path d="M15 9L19 14L15 19" stroke="white" stroke-width="1.6"/>
-            </svg>
-        </button>
     </div>
 </div>
 
