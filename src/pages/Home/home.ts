@@ -105,12 +105,15 @@ export class Home extends Block {
         if (!this.dropMenuTemplate) return;
         const menuContainer = this.getContent().querySelector("#dropdownMenu");
         if (!menuContainer) return;
+
         const template = Handlebars.compile(this.dropMenuTemplate);
-        const newHtml = template({hasActiveChat});
+        const newHtml = template({ hasActiveChat });
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = newHtml.trim();
+
         menuContainer.replaceWith(tempDiv.firstElementChild!);
-        this.dropdownsMenu();
+
+        this.attachEvents();
     }
 
     private dropdownsMenu(): void {
@@ -127,7 +130,9 @@ export class Home extends Block {
         toggle?.addEventListener("click", () => {
             const hasActive = this.props.selectedChatId !== null;
             this.renderDropdownMenu(hasActive);
-            menu?.classList.toggle("visible");
+
+            const newMenu = this.getContent().querySelector("#dropdownMenu");
+            newMenu?.classList.add("visible");
         });
 
         menu?.addEventListener("click", async (e) => {
