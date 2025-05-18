@@ -17,12 +17,21 @@ export class ChatSocket {
         });
 
         this.socket.addEventListener("message", (event) => {
+            const raw = event.data as string;
+
+            if (typeof raw === "string" && !raw.trim().startsWith("{")) {
+                console.debug("Служебное сообщение WS, пропускаем:", raw);
+                return;
+            }
+
             try {
-                const data = JSON.parse(event.data);
-                if (this.messageHandler) this.messageHandler(data);
-                console.log("Сообщение от сервера:", data); //комментарии для отладки
+                const data = JSON.parse(raw);
+                console.log("Сообщение от сервера:", data);
+                if (this.messageHandler) {
+                    this.messageHandler(data);
+                }
             } catch (e) {
-                console.error("Ошибка парсинга сообщения:", e);
+                console.error("Ошибка парсинга JSON:", e, "| Raw data:", raw);
             }
         });
 

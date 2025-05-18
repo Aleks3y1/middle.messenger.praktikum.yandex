@@ -1,5 +1,4 @@
-const HOST_URL = 'https://ya-praktikum.tech/api/v2';
-
+import {HOST_URL} from "../../hooks/route.ts";
 
 export async function registration(
     first_name: string,
@@ -27,7 +26,7 @@ export async function registration(
         });
 
         if (!response.ok) {
-            const errorText = await response.text();
+            const errorText = await response.clone().text();
             new Error(errorText || `Ошибка: ${response.status}`);
         }
 

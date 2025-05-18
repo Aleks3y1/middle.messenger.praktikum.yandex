@@ -1,4 +1,4 @@
-const HOST_URL = 'https://ya-praktikum.tech/api/v2';
+import {HOST_URL} from "../../hooks/route.ts";
 
 export async function deleteChat(chatId: number): Promise<void> {
     const response = await fetch(`${HOST_URL}/chats`, {
@@ -8,7 +8,7 @@ export async function deleteChat(chatId: number): Promise<void> {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ chatId }),
+        body: JSON.stringify({chatId}),
     });
 
     if (!response.ok) {

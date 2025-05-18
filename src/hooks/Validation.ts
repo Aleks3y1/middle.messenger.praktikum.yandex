@@ -21,13 +21,10 @@ export class Validation {
 
     public static validate(field: HTMLInputElement): boolean {
         const {name, value} = field;
-        const pattern: RegExp = this.patterns[name];
-
+        const pattern = this.patterns[name];
         if (!pattern) return true;
-
-        const isValid: boolean = pattern.test(value.trim());
+        const isValid = pattern.test(value.trim());
         const errorElement = field.nextElementSibling as HTMLElement;
-
         if (!isValid) {
             field.classList.add("input-error");
             if (errorElement) errorElement.textContent = this.errorMessages[name];
@@ -35,7 +32,6 @@ export class Validation {
             field.classList.remove("input-error");
             if (errorElement) errorElement.textContent = "";
         }
-
         return isValid;
     }
 }
