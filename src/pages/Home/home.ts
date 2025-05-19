@@ -156,6 +156,7 @@ export class Home extends Block {
 
             const newMenu = this.getContent().querySelector("#dropdownMenu");
             newMenu?.classList.add("visible");
+            this.handleOutsideClickDropdown();
         });
 
         menu?.removeEventListener("click", this.handleMenuClick);
@@ -332,6 +333,22 @@ export class Home extends Block {
                 });
             })
         );
+    }
+
+    private handleOutsideClickDropdown(): void {
+        const menu = this.getContent().querySelector("#dropdownMenu");
+        const toggle = this.getContent().querySelector("#menu-toggle");
+
+        const onClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+
+            if (!menu?.contains(target) && !toggle?.contains(target)) {
+                menu?.classList.remove("visible");
+                document.removeEventListener("click", onClick);
+            }
+        };
+
+        setTimeout(() => document.addEventListener("click", onClick), 0);
     }
 
     private handleOutsideClick(modal: Element | null): void {
