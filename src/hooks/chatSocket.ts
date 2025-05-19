@@ -1,15 +1,12 @@
-import {getChatToken} from "../api/Chat/getChatToken";
-import {ChatSocket} from "../base/ChatWebSocket.ts";
+import {ChatWebSocket} from "../base/ChatWebSocket.ts";
+import {getChatToken} from "../api/Chat/getChatToken.ts";
 
-let chatSocket: ChatSocket | null = null;
+let chatSocket: ChatWebSocket | null = null;
 
-export async function connectToChat(chatId: number, userId: number): Promise<ChatSocket | null> {
+export async function connectToChat(chatId: number, userId: number): Promise<ChatWebSocket | null> {
     try {
-        console.log(" Инициализация подключения:", { userId, chatId });
         const token = await getChatToken(chatId);
-        console.log("Токен получен:", token);
-
-        chatSocket = new ChatSocket(userId, chatId, token);
+        chatSocket = new ChatWebSocket(chatId, userId, token, () => {});
         return chatSocket;
     } catch (error) {
         console.error("Ошибка подключения к WebSocket:", error);
@@ -17,6 +14,6 @@ export async function connectToChat(chatId: number, userId: number): Promise<Cha
     }
 }
 
-export function getChatSocket(): ChatSocket | null {
+export function getChatSocket(): ChatWebSocket | null {
     return chatSocket;
 }

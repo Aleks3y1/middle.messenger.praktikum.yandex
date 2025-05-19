@@ -23,7 +23,7 @@ export class ChatWebSocket {
 
     private setupEvents(): void {
         this.socket.addEventListener("open", () => {
-            console.log("WebSocket открыт");
+            console.log("WebSocket открыт");//оставил для отладки
 
             this.pingInterval = window.setInterval(() => {
                 this.send({type: "ping"});
