@@ -130,7 +130,7 @@ export class Home extends Block {
         if (!menuContainer) return;
 
         const template = Handlebars.compile(this.dropMenuTemplate);
-        const newHtml = template({ hasActiveChat });
+        const newHtml = template({hasActiveChat});
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = newHtml.trim();
 
@@ -331,8 +331,9 @@ export class Home extends Block {
         setTimeout(() => document.addEventListener("click", onClick), 0);
     }
 
-    private handleEvents(event: Event): void {
+    private async handleEvents(event: Event): Promise<void> {
         const target = event.target as HTMLElement;
+
         if (target.closest(".search-form")) {
             event.preventDefault();
             this.getSearch(event);
@@ -341,11 +342,31 @@ export class Home extends Block {
             this.getMessage(event);
         } else if (target.closest(".chat-frame__footer__form")) {
             event.preventDefault();
+
             const input = this.getContent().querySelector("#message_input") as HTMLInputElement;
             const message = input?.value.trim();
             if (!message) return;
+
             this.chatSocket?.send({type: "message", content: message});
             input.value = "";
+            //теперь точно сортировка работает, один минус, задержка пол секунды:\
+            setTimeout(async () => {
+                const updatedChats = await getChats();
+                const currentChatId = this.props.selectedChatId;
+
+                const sortedChats = updatedChats.sort((a: any, b: any) => {
+                    const aTime = a.last_message?.time ? new Date(a.last_message.time).getTime() : 0;
+                    const bTime = b.last_message?.time ? new Date(b.last_message.time).getTime() : 0;
+                    return bTime - aTime;
+                });
+
+                const updatedList = sortedChats.map((chat: any) => ({
+                    ...chat,
+                    isActive: chat.id === currentChatId
+                }));
+
+                this.setProps({usersChat: updatedList});
+            }, 500);
         }
     }
 
