@@ -4,7 +4,7 @@ export class Validation {
         second_name: /^[A-Za-zА-Яа-я-]{2,20}$/,
         login: /^(?!\d+$)[a-zA-Z0-9_-]{3,20}$/,
         email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        password: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/,
+        password: /^(?=.*\d)[A-Za-z\d]{8,15}$/,
         phone: /^\+?\d{10,15}$/,
         message: /.+/
     };
@@ -14,7 +14,7 @@ export class Validation {
         second_name: "Только буквы и дефис",
         login: "От 3 до 20 символов",
         email: "Некорректный email",
-        password: "8-40 символов",
+        password: "8-15 символов и цифр",
         phone: "От 10 до 15 цифр",
         message: "Не должно быть пустым"
     };

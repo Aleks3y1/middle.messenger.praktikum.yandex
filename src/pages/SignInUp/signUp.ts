@@ -88,7 +88,7 @@ export class SignUp extends Block {
             data.password,
             data.phone
         )
-            .then(() => router.go("/"))
+            .then(() => router.go("/messenger"))
             .catch(console.error);
     }
 }
