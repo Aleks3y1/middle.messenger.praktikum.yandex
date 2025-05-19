@@ -130,7 +130,7 @@ export class Home extends Block {
         if (!menuContainer) return;
 
         const template = Handlebars.compile(this.dropMenuTemplate);
-        const newHtml = template({hasActiveChat});
+        const newHtml = template({ hasActiveChat });
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = newHtml.trim();
 
