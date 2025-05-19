@@ -15,7 +15,7 @@
                     <h3 class="aside-list__title">{{title}}</h3>
                     <p class="aside-list__date">
                         {{#if last_message.time}}
-                            {{last_message.time}}
+                            {{formatChatTime last_message.time}}
                         {{/if}}
                     </p>
                 </div>

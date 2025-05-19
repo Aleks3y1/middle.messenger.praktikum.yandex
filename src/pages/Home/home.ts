@@ -46,7 +46,7 @@ export class Home extends Block {
                 chatFrameContent,
                 userChatContent,
                 homeTemplate,
-                chats
+                chatsRaw
             ] = await Promise.all([
                 templateLoader("/templates/partials/search.hbs"),
                 templateLoader("/templates/partials/dropdownMenu.hbs"),
@@ -66,6 +66,12 @@ export class Home extends Block {
             Handlebars.registerPartial("deleteUserModal", deleteUserModal);
             Handlebars.registerPartial("chatFrame", chatFrameContent);
             Handlebars.registerPartial("userChat", userChatContent);
+
+            const chats = chatsRaw.sort((a: any, b: any) => {
+                const aTime = a.last_message?.time ? new Date(a.last_message.time).getTime() : 0;
+                const bTime = b.last_message?.time ? new Date(b.last_message.time).getTime() : 0;
+                return bTime - aTime;
+            });
 
             this.dropMenuTemplate = dropMenu;
             this.props.template = Handlebars.compile(homeTemplate);
