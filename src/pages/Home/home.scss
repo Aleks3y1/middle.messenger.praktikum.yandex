@@ -222,6 +222,7 @@
     border-radius: 12px;
     position: relative;
     margin-top: 10px;
+    min-width: 60px;
 
     &__time {
       color: $altTxtColor;
@@ -235,7 +236,7 @@
     }
 
     &__breads {
-      margin-left: 58px;
+      left: 0;
     }
 
     &-our {
@@ -247,7 +248,7 @@
       background-color: #E4EDFD;
       margin-left: auto;
       width: fit-content;
-      min-width: 114px;
+      min-width: 60px;
       max-width: 402px;
       padding: 11px;
       flex-shrink: 0;

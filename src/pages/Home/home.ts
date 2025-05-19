@@ -143,9 +143,9 @@ export class Home extends Block {
         const root = this.getContent();
         const toggle = root.querySelector("#menu-toggle");
         const menu = root.querySelector("#dropdownMenu");
-        const modal = root.querySelector("#createChatModal");
-        const addUserModal = root.querySelector("#addUserModal");
-        const deleteUserModal = root.querySelector("#deleteUserModal");
+        // const modal = root.querySelector("#createChatModal");
+        // const addUserModal = root.querySelector("#addUserModal");
+        // const deleteUserModal = root.querySelector("#deleteUserModal");
         const form = root.querySelector("#create-chat-form") as HTMLFormElement | null;
         const addUserForm = root.querySelector("#add-user-form") as HTMLFormElement | null;
         const deleteUserForm = root.querySelector("#delete-user-form") as HTMLFormElement | null;
@@ -158,44 +158,8 @@ export class Home extends Block {
             newMenu?.classList.add("visible");
         });
 
-        menu?.addEventListener("click", async (e) => {
-            const action = (e.target as HTMLElement).dataset.action;
-            menu?.classList.remove("visible");
-
-            if (action === "create") {
-                modal?.classList.add("active");
-                this.handleOutsideClick(modal);
-            }
-
-            if (action === "delete") {
-                const confirmed = confirm("Вы уверены, что хотите удалить чат?");
-                if (!confirmed) return;
-                const chatId = this.getSelectedChatId();
-                if (!chatId) return console.error("Выберите чат.");
-                try {
-                    await deleteChat(chatId);
-                    const chats = await getChats();
-                    const selectedChatId = this.getSelectedChatId();
-                    const usersChatWithActive = chats.map((chat: { id: number }) => ({
-                        ...chat,
-                        isActive: chat.id === selectedChatId
-                    }));
-                    this.setProps({usersChat: usersChatWithActive, selectedChatId});
-                } catch (err) {
-                    console.error("Ошибка при удалении чата:", err);
-                }
-            }
-
-            if (action === "add-user") {
-                addUserModal?.classList.add("active");
-                this.handleOutsideClick(addUserModal);
-            }
-
-            if (action === "delete-user") {
-                deleteUserModal?.classList.add("active");
-                this.handleOutsideClick(deleteUserModal);
-            }
-        });
+        menu?.removeEventListener("click", this.handleMenuClick);
+        menu?.addEventListener("click", this.handleMenuClick);
 
         if (form) {
             form.removeEventListener("submit", this.UserHandler);
@@ -214,6 +178,56 @@ export class Home extends Block {
     private readonly UserHandler = this.createChats.bind(this);
     private readonly addUserSubmitHandler = this.addUserSubmit.bind(this);
     private readonly deleteUserSubmitHandler = this.deleteUserSubmit.bind(this);
+
+    private readonly handleMenuClick = async (e: Event) => {
+        const menu = this.getContent().querySelector("#dropdownMenu");
+        const action = (e.target as HTMLElement).dataset.action;
+        menu?.classList.remove("visible");
+
+        if (action === "create") {
+            this.getContent().querySelector("#createChatModal")?.classList.add("active");
+            this.handleOutsideClick(this.getContent().querySelector("#createChatModal"));
+        }
+
+        if (action === "delete") {
+            const confirmed = confirm("Вы уверены, что хотите удалить чат?");
+            if (!confirmed) return;
+
+            const chatId = this.getSelectedChatId();
+            if (!chatId) return console.error("Выберите чат.");
+
+            try {
+                await deleteChat(chatId);
+
+                const chats = await getChats();
+
+                const sortedChats = chats.sort((a: any, b: any) => {
+                    const aTime = a.last_message?.time ? new Date(a.last_message.time).getTime() : 0;
+                    const bTime = b.last_message?.time ? new Date(b.last_message.time).getTime() : 0;
+                    return bTime - aTime;
+                });
+
+                this.setProps({
+                    usersChat: sortedChats,
+                    selectedChatId: null,
+                    messages: []
+                });
+
+            } catch (err) {
+                console.error("Ошибка при удалении чата:", err);
+            }
+        }
+
+        if (action === "add-user") {
+            this.getContent().querySelector("#addUserModal")?.classList.add("active");
+            this.handleOutsideClick(this.getContent().querySelector("#addUserModal"));
+        }
+
+        if (action === "delete-user") {
+            this.getContent().querySelector("#deleteUserModal")?.classList.add("active");
+            this.handleOutsideClick(this.getContent().querySelector("#deleteUserModal"));
+        }
+    };
 
     private async createChats(event: Event): Promise<void> {
         event.preventDefault();

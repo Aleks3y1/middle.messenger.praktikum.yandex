@@ -1,7 +1,7 @@
 import {HOST_URL} from "../../hooks/route.ts";
 
 
-export async function logout() {
+export async function logout(): Promise<void> {
     const response = await fetch(`${HOST_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
@@ -13,10 +13,14 @@ export async function logout() {
         throw new Error(errorText || `Ошибка: ${response.status}`);
     }
 
-    const contentType = response.headers.get('Content-Type');
-    if (contentType && contentType.includes('application/json')) {
-        return await response.json();
-    } else {
-        return await response.text();
-    }
+    document.cookie = "uuid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // const contentType = response.headers.get('Content-Type');
+    // if (contentType && contentType.includes('application/json')) {
+    //     return await response.json();
+    // } else {
+    //     return await response.text();
+    // }
 }

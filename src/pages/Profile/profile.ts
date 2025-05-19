@@ -108,7 +108,10 @@ export class Profile extends Block {
 
         if (target.closest(".logout-link")) {
             event.preventDefault();
-            logout().then(() => router.go('/')).catch(console.error);
+            logout().then(() => {
+                router.go('/')
+                window.location.reload();
+            }).catch(console.error);
         }
     }
 
