@@ -1,5 +1,5 @@
 import Block from "../base/Block";
-import {Route} from "./Route";
+import {Route} from "./Route.js";
 
 export class Router {
     private static __instance ?: Router;

@@ -43,15 +43,14 @@ export class XHRTransport {
 
     private _request<TResponse>(url: string, options: Options): Promise<TResponse> {
         const {
-method, data, headers = {}, timeout = 5000
-} = options;
+            method, data, headers = {}, timeout = 5000
+        } = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open(method, url);
             xhr.timeout = timeout;
 
-            // Устанавливаем заголовки
             Object.entries(headers).forEach(([key, value]) => {
                 xhr.setRequestHeader(key, value);
             });
@@ -60,7 +59,7 @@ method, data, headers = {}, timeout = 5000
                 try {
                     resolve(JSON.parse(xhr.responseText) as TResponse);
                 } catch (error) {
-                    reject(new Error(`Ошибка парсинга JSON: ${xhr.responseText}`));
+                    reject(new Error(`Ошибка парсинга JSON: ${xhr.responseText} ${error}`));
                 }
             };
 

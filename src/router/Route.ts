@@ -1,6 +1,6 @@
 import Block from "../base/Block";
 import {isEqual} from "lodash-es";
-import {render} from "../hooks/render"
+import {render} from "../hooks/render.js"
 
 export class Route {
     private _pathname: string;

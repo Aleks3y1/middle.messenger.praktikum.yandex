@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-import EventBus from "./EventBus";
+import EventBus from "./EventBus.js";
 
 type Events = Record<string, (event: Event) => void>;
 

@@ -11,7 +11,7 @@ import Handlebars from "handlebars";
 
 Handlebars.registerHelper("eq", (a, b) => a === b);
 registerHelpers();
-
+//коммент для проверки1
 router
     .use('/messenger', Home)
     .use('/', SignIn)
