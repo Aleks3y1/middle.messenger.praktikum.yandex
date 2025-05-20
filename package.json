@@ -30,6 +30,7 @@
     "@types/sinon": "^17.0.4",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
+    "chai": "^5.2.0",
     "eslint": "^9.27.0",
     "fake-xml-http-request": "^2.1.2",
     "global-jsdom": "^26.0.0",
