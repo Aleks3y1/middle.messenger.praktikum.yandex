@@ -1,0 +1,8 @@
+<div id="dropdownMenu" class="dropdown-menu">
+    <button class="dropdown-menu__item item-create" data-action="create">Создать чат</button>
+    <button class="dropdown-menu__item item-delete" data-action="delete">Удалить чат</button>
+    {{#if hasActiveChat}}
+        <button class="dropdown-menu__item item-add-user" data-action="add-user">Добавить пользователя</button>
+        <button class="dropdown-menu__item item-delete-user" data-action="delete-user">Удалить пользователя</button>
+    {{/if}}
+</div>

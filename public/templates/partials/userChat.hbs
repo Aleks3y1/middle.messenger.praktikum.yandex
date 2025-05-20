@@ -1,23 +1,32 @@
 <ul class="aside-list">
     {{#each usersChat}}
-        <li class="aside-list__item" tabindex="0" aria-label="Чат с {{userName}}, последнее сообщение {{message}}" data-user-id="{{id}}">
+        <li
+                class="aside-list__item {{#if isActive}}active{{/if}}"
+                tabindex="0"
+                aria-label="Чат: {{title}}, последнее сообщение: {{last_message.content}}"
+                data-id="{{id}}">
+
             <figure class="aside-list__avatar">
-                <!--                <img class="aside-list__avatar-img" src="{{avatar}}" />-->
+                <!-- <img class="aside-list__avatar-img" src="{{avatar}}" /> -->
             </figure>
+
             <div class="aside-list__info">
                 <div class="aside-list__nameAndDate">
-                    <h3 class="aside-list__title">{{userName}}</h3>
-                    <p class="aside-list__date">{{date}}</p>
+                    <h3 class="aside-list__title">{{title}}</h3>
+                    <p class="aside-list__date">
+                        {{#if last_message.time}}
+                            {{formatChatTime last_message.time}}
+                        {{/if}}
+                    </p>
                 </div>
                 <p>
-                    {{#if you}}
-                        <span class="aside-list__label">Вы: </span> {{message}}
-                    {{else}}
-                        {{message}}
+                    {{#if last_message.user.login}}
+                        <span class="aside-list__label">{{last_message.user.login}}: </span>
                     {{/if}}
+                    {{last_message.content}}
                 </p>
-                {{#if unread}}
-                    <div class="aside-list__unread">{{quantityUnread}}</div>
+                {{#if unread_count}}
+                    <div class="aside-list__unread">{{unread_count}}</div>
                 {{/if}}
             </div>
         </li>
