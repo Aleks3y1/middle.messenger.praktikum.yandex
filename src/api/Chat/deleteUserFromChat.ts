@@ -1,12 +1,12 @@
 import {HOST_URL} from "../../hooks/route.ts";
 
-export async function addUserToChat(userId: number, chatId: number) {
+export async function deleteUserFromChat(userId: number, chatId: number) {
     const response = await fetch(`${HOST_URL}/chats/users`, {
-        method: 'PUT',
-        credentials: 'include',
-        mode: 'cors',
+        method: "DELETE",
+        credentials: "include",
+        mode: "cors",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
             users: [userId],
@@ -20,7 +20,7 @@ export async function addUserToChat(userId: number, chatId: number) {
     }
 
     const text = await response.text();
-    if (text.trim() === 'OK') return {success: true};
+    if (text.trim() === "OK") return {success: true};
     try {
         return JSON.parse(text);
     } catch {

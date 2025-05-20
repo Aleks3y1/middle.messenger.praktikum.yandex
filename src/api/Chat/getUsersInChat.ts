@@ -1,4 +1,4 @@
-const HOST_URL = 'https://ya-praktikum.tech/api/v2';
+import {HOST_URL} from "../../hooks/route.ts";
 
 export async function getUsersInChat(chatId: number) {
     const response = await fetch(`${HOST_URL}/chats/${chatId}/users`, {

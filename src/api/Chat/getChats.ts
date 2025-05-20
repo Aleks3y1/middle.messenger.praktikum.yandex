@@ -1,4 +1,4 @@
-const HOST_URL = 'https://ya-praktikum.tech/api/v2';
+import {HOST_URL} from "../../hooks/route.ts";
 
 export async function getChats() {
     const response = await fetch(`${HOST_URL}/chats`, {
@@ -8,7 +8,7 @@ export async function getChats() {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.clone().text();
         throw new Error(errorText || `Ошибка: ${response.status}`);
     }
 

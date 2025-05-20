@@ -7,16 +7,18 @@ import {Notfound} from "./pages/Notfound/notfound";
 import {ServerError} from "./pages/500/serverError";
 import {Profile} from "./pages/Profile/profile";
 import {router} from "./hooks/routerHook";
+import Handlebars from "handlebars";
 
+Handlebars.registerHelper("eq", (a, b) => a === b);
 registerHelpers();
 
 router
-    .use('/', Home)
-    .use('/signin', SignIn)
-    .use('/signup', SignUp)
+    .use('/messenger', Home)
+    .use('/', SignIn)
+    .use('/sign-up', SignUp)
     .use('/notfound', Notfound)
     .use('/500', ServerError)
-    .use('/profile', Profile)
+    .use('/settings', Profile)
     .start();
 
 document.addEventListener("click", (e) => {

@@ -1,9 +1,10 @@
 <ul class="aside-list">
     {{#each usersChat}}
-        <li class="aside-list__item"
-            tabindex="0"
-            aria-label="Чат: {{title}}, последнее сообщение: {{last_message.content}}"
-            data-id="{{id}}">
+        <li
+                class="aside-list__item {{#if isActive}}active{{/if}}"
+                tabindex="0"
+                aria-label="Чат: {{title}}, последнее сообщение: {{last_message.content}}"
+                data-id="{{id}}">
 
             <figure class="aside-list__avatar">
                 <!-- <img class="aside-list__avatar-img" src="{{avatar}}" /> -->
@@ -14,7 +15,7 @@
                     <h3 class="aside-list__title">{{title}}</h3>
                     <p class="aside-list__date">
                         {{#if last_message.time}}
-                            {{last_message.time}}
+                            {{formatChatTime last_message.time}}
                         {{/if}}
                     </p>
                 </div>

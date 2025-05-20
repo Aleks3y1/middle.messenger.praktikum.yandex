@@ -6,7 +6,7 @@ import {router} from "../../hooks/routerHook";
 import {logout} from "../../api/User/logout.ts";
 import {user} from "../../api/User/user.ts";
 import {setUser} from "../../api/User/setUser.ts";
-import {Validation} from "../../hooks/Validation.ts";
+import {validationHook} from "../../hooks/ValidationHook.ts";
 import {setPassword} from "../../api/User/setPassword.ts";
 import {setAvatar} from "../../api/User/setAvatar.ts";
 
@@ -18,8 +18,8 @@ export class Profile extends Block {
             buttonText: "Изменить",
             events: {
                 click: (event) => this.handleClick(event),
-                change: (event) => this.handleChange(event)
-            }
+                change: (event) => this.handleChange(event),
+            },
         });
 
         void this.loadTemplate();
@@ -30,12 +30,11 @@ export class Profile extends Block {
             const [buttonContent, profileTemplate, userInfo] = await Promise.all([
                 templateLoader("/templates/partials/button.hbs"),
                 templateLoader("/templates/profile.hbs"),
-                user()
+                user(),
             ]);
 
             Handlebars.registerPartial("button", buttonContent);
             this.props.template = Handlebars.compile(profileTemplate);
-
             this.setProps({user: userInfo});
         } catch (error) {
             console.error("Ошибка загрузки шаблона:", error);
@@ -51,7 +50,7 @@ export class Profile extends Block {
             password: this.props.password,
             login: this.props.login,
             buttonText: this.props.buttonText,
-            user: this.props.user
+            user: this.props.user,
         });
     }
 
@@ -66,133 +65,67 @@ export class Profile extends Block {
         if (target.closest(".action-link__login")) {
             event.preventDefault();
             this.setProps({login: true, password: true, buttonText: "Сохранить"});
-
         }
 
         if (target.closest(".main-button")) {
             event.preventDefault();
+            const form = document.querySelector(".form-data") as HTMLFormElement;
+            if (!form) {
+                return;
+            }
+
+            if (!validationHook(form)) {
+                console.error("Введите корректные данные");
+                return;
+            }
+
             if (this.props.login) {
-                const form = document.querySelector(".form-data") as HTMLFormElement;
-
-                if (!form) {
-                    return;
-                }
-
-                let isValid = true;
-
-                const formInputs = form.querySelectorAll("input");
-
-                formInputs.forEach((input) => {
-                    const isValidField = Validation.validate(input as HTMLInputElement);
-
-                    if (!isValidField) {
-                        isValid = false;
-                    }
-                });
-
-                if (!isValid) {
-                    return console.error("Введите корректные данные");
-                }
-
                 const formData = new FormData(form);
-                const formElements: Record<string, string> = {};
-
-                formData.forEach((value, key) => {
-                    formElements[key] = value.toString().trim();
-                });
-
-                const {first_name, second_name, display_name, login, email, phone} = formElements;
+                const data = Object.fromEntries(formData.entries()) as Record<string, string>;
+                const {first_name, second_name, display_name, login, email, phone} = data;
                 setUser({first_name, second_name, display_name, login, email, phone})
                     .then(() => {
                         this.setProps({
                             user: {first_name, second_name, display_name, login, email, phone},
                             password: true,
                             login: false,
-                            buttonText: "Изменить"
-                        })
-                    })
-            } else if (!this.props.password) {
-                const formPassword = document.querySelector(".form-data") as HTMLFormElement;
-
-                if (!formPassword) {
+                            buttonText: "Изменить",
+                        });
+                    });
+            } else {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries()) as Record<string, string>;
+                const {oldPassword, newPassword, retryPassword} = data;
+                if (newPassword !== retryPassword) {
+                    console.error("Пароли не совпадают");
                     return;
                 }
-
-                let isValid = true;
-
-                const formInputsPass = formPassword.querySelectorAll("input");
-
-                formInputsPass.forEach((input) => {
-                    const isValidField = Validation.validate(input as HTMLInputElement);
-
-                    if (!isValidField) {
-                        isValid = false;
-                    }
+                setPassword({oldPassword, newPassword}).then(() => {
+                    this.setProps({password: true, login: false, buttonText: "Изменить"});
                 });
-
-                if (!isValid) {
-                    return console.error("Введите корректные данные");
-                }
-
-                const formData = new FormData(formPassword);
-                const formElementsPass: Record<string, string> = {};
-
-                formData.forEach((value, key) => {
-                    formElementsPass[key] = value.toString().trim();
-                });
-
-                const {oldPassword, newPassword, retryPassword} = formElementsPass;
-                if (newPassword !== retryPassword) {
-                    return console.error("Пароли не совпадают");
-                }
-
-                setPassword({oldPassword, newPassword})
-                    .then(() => {
-                        this.setProps({
-                            password: true,
-                            login: false,
-                            buttonText: "Изменить"
-                        })
-                    })
-            } else {
-                this.setProps({password: true, login: false, buttonText: "Изменить"});
             }
         }
 
         if (target.closest(".logout-link")) {
             event.preventDefault();
-            logout()
-                .then(() => {
-                    router.go('/signin');
-                })
-                .catch((error) => {
-                    console.error("Ошибка выхода:", error);
-                });
+            logout().then(() => {
+                router.go('/')
+                window.location.reload();
+            }).catch(console.error);
         }
     }
 
     private handleChange(event: Event): void {
         const target = event.target as HTMLInputElement;
-
-        if (target?.type === 'file' && target.name === 'avatar' && target.files?.length) {
+        if (target.type === 'file' && target.name === 'avatar' && target.files?.length) {
             const file = target.files[0];
             const formData = new FormData();
             formData.append('avatar', file);
-
-            setAvatar(formData)
-                .then((user) => {
-                    console.log("Ответ от API после загрузки аватара:", user);
+            setAvatar(formData).then((user) => {
                 this.setProps({
-                    user: {
-                        ...this.props.user,
-                        avatar: user.avatar,
-                        timestamp: Date.now(),
-                    }
-                })
-            })
-                .catch((error) => {
-                    console.error('Ошибка загрузки аватара', error);
-                })
+                    user: {...this.props.user, avatar: user.avatar, timestamp: Date.now()},
+                });
+            }).catch(console.error);
         }
     }
 }

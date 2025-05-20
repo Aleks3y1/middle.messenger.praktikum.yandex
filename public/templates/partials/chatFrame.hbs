@@ -2,9 +2,11 @@
     <header class="chat-frame__header">
         <div class="chat-frame__user-info">
             <figure class="chat-frame__avatar">
-                <!--                <img src="" alt="">-->
+                {{#if avatar}}
+                    <img src="{{avatar}}" alt="Аватар пользователя"/>
+                {{/if}}
             </figure>
-            <p class="chat-frame__user-name">Вадим</p>
+            <p class="chat-frame__user-name">{{chatTitle}}</p>
         </div>
         <button class="dropdown-button" id="menu-toggle">
             <svg xmlns="http://www.w3.org/2000/svg" width="3" height="16" viewBox="0 0 3 16" fill="none">
@@ -15,37 +17,51 @@
         </button>
         {{> dropdownMenu }}
         {{> addUserModal }}
+        {{> deleteUserModal }}
     </header>
-    <main class="chat-frame__main">
-        <p class="chat-frame__date">19 июня</p>
-        <div class="chat-frame__messages only-anchor">
-            Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила
-            Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью
-            500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с
-            собой забрали только кассеты с пленкой.
-
-            Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не
-            попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.
-            <p class="chat-frame__messages__time">11:56</p>
-        </div>
-        <div class="chat-frame__messages picture-frame">
-            <img src="../../../static/camera.jpg" alt="изображение отправленное пользователем">
-            <p class="chat-frame__messages__time">11:56</p>
-        </div>
-        <div class="chat-frame__messages-our">
-            <p>Круто!</p>
-            <p class="chat-frame__messages-our__time">
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5" fill="none">
-                    <line y1="-0.5" x2="3.765" y2="-0.5"
-                          transform="matrix(0.705933 0.708278 -0.705933 0.708278 0.700195 2.33301)" stroke="#3369F3"/>
-                    <line y1="-0.5" x2="5.6475" y2="-0.5"
-                          transform="matrix(0.705933 -0.708278 0.705933 0.708278 3.3584 5)" stroke="#3369F3"/>
-                    <line y1="-0.5" x2="5.6475" y2="-0.5"
-                          transform="matrix(0.705933 -0.708278 0.705933 0.708278 6.01562 5)" stroke="#3369F3"/>
-                </svg>
-                12:00
-            </p>
-        </div>
+    <main class="chat-frame__main" id="chat-scroll-container">
+        <p class="chat-frame__date">{{currentDate}}</p>
+        {{#if messages.length}}
+            {{#each messages}}
+                {{#if this.isMine}}
+                    <div class="chat-frame__messages-our">
+                        <p>{{this.content}}</p>
+                        <p class="chat-frame__messages-our__time">{{this.time}}</p>
+                        <svg class="chat-frame__messages__breads" xmlns="http://www.w3.org/2000/svg" width="10"
+                             height="5"
+                             viewBox="0 0 10 5" fill="none">
+                            <line y1="-0.5" x2="3.765" y2="-0.5"
+                                  transform="matrix(0.705933 0.708278 -0.705933 0.708278 0.700195 2.33301)"
+                                  stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                            <line y1="-0.5" x2="5.6475" y2="-0.5"
+                                  transform="matrix(0.705933 -0.708278 0.705933 0.708278 3.3584 5)"
+                                  stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                            <line y1="-0.5" x2="5.6475" y2="-0.5"
+                                  transform="matrix(0.705933 -0.708278 0.705933 0.708278 6.01562 5)"
+                                  stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                        </svg>
+                    </div>
+                {{else}}
+                    <div class="chat-frame__messages">
+                        <p>{{this.content}}</p>
+                        <p class="chat-frame__messages__time">{{this.time}}</p>
+                        <svg class="chat-frame__messages__breads" xmlns="http://www.w3.org/2000/svg" width="10"
+                             height="5"
+                             viewBox="0 0 10 5" fill="none">
+                            <line y1="-0.5" x2="3.765" y2="-0.5"
+                                  transform="matrix(0.705933 0.708278 -0.705933 0.708278 0.700195 2.33301)"
+                                  stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                            <line y1="-0.5" x2="5.6475" y2="-0.5"
+                                  transform="matrix(0.705933 -0.708278 0.705933 0.708278 3.3584 5)"
+                                  stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                            <line y1="-0.5" x2="5.6475" y2="-0.5"
+                                  transform="matrix(0.705933 -0.708278 0.705933 0.708278 6.01562 5)"
+                                  stroke="{{#if this.is_read}}#3369F3{{else}}#999999{{/if}}"/>
+                        </svg>
+                    </div>
+                {{/if}}
+            {{/each}}
+        {{/if}}
     </main>
     <div class="chat-frame__footer">
         <div class="chat-frame__footer__insert">
@@ -73,18 +89,17 @@
                       fill="#999999"/>
             </svg>
         </div>
-        <form class="chat-frame__footer__enter">
-            <input type="text" placeholder="Сообщение" class="chat-frame__footer__input" name="message"
-                   id="message_input">
-            <label for="message_input"></label>
+        <form class="chat-frame__footer__form">
+            <label><input type="text" placeholder="Сообщение" class="chat-frame__footer__input" name="message"
+                          id="message_input"></label>
+            <button class="chat-frame__footer__send" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="14" fill="#3369F3"/>
+                    <rect x="8" y="13.2002" width="11" height="1.6" fill="white"/>
+                    <path d="M15 9L19 14L15 19" stroke="white" stroke-width="1.6"/>
+                </svg>
+            </button>
         </form>
-        <div class="chat-frame__footer__send">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <circle cx="14" cy="14" r="14" fill="#3369F3"/>
-                <rect x="8" y="13.2002" width="11" height="1.6" fill="white"/>
-                <path d="M15 9L19 14L15 19" stroke="white" stroke-width="1.6"/>
-            </svg>
-        </div>
     </div>
 </div>
 

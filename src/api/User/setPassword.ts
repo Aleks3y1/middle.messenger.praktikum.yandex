@@ -1,4 +1,4 @@
-const HOST_URL = 'https://ya-praktikum.tech/api/v2';
+import {HOST_URL} from "../../hooks/route.ts";
 
 type SetUserProps = {
     oldPassword: string;
